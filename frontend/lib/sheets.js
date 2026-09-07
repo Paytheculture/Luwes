@@ -18,6 +18,10 @@ export function getSheetsClient() {
   }
 
   const credentials = JSON.parse(credJSON);
+  if (credentials.private_key) {
+    credentials.private_key = credentials.private_key.replace(/\\n/g, '\n');
+  }
+
   const auth = new google.auth.GoogleAuth({
     credentials,
     scopes: ['https://www.googleapis.com/auth/spreadsheets'],
@@ -48,7 +52,7 @@ export async function getAllPesanan() {
     range: 'Pesanan!A2:K',
   });
 
-  const rows = res.data.values || [];
+  const rows = (res.data.values || []).filter((row) => row && safeString(row, 0).trim() !== '');
   return rows.map((row) => {
     let items = [];
     const itemsJSON = safeString(row, 6);
@@ -73,10 +77,37 @@ export async function getAllPesanan() {
 }
 
 export async function getPesananById(id) {
-  const list = await getAllPesanan();
-  const idx = list.findIndex((p) => p.id === id);
+  const { srv, spreadsheetId } = getSheetsClient();
+  const res = await srv.spreadsheets.values.get({
+    spreadsheetId,
+    range: 'Pesanan!A2:K',
+  });
+  const rawRows = res.data.values || [];
+  const idx = rawRows.findIndex((row) => row && safeString(row, 0).trim() === id);
   if (idx === -1) return null;
-  return { data: list[idx], rowNum: idx + 2 };
+
+  const row = rawRows[idx];
+  let items = [];
+  const itemsJSON = safeString(row, 6);
+  if (itemsJSON) {
+    try { items = JSON.parse(itemsJSON); } catch (e) {}
+  }
+
+  const data = {
+    id: safeString(row, 0),
+    nama_pengantin: safeString(row, 1),
+    alamat: safeString(row, 2),
+    no_hp: safeString(row, 3),
+    tanggal_pasang: safeString(row, 4),
+    tanggal_bongkar: safeString(row, 5),
+    items,
+    total_harga: safeInt(row, 7),
+    status: safeString(row, 8),
+    catatan: safeString(row, 9),
+    created_at: safeString(row, 10),
+  };
+
+  return { data, rowNum: idx + 2 };
 }
 
 export async function createPesanan(pesanan) {
@@ -145,26 +176,11 @@ export async function deletePesanan(id) {
   if (!existing) throw new Error('Pesanan tidak ditemukan');
 
   const { srv, spreadsheetId } = getSheetsClient();
-  const sp = await srv.spreadsheets.get({ spreadsheetId });
-  const sheet = sp.data.sheets.find((s) => s.properties.title === 'Pesanan');
-  const sheetId = sheet?.properties?.sheetId || 0;
-
-  await srv.spreadsheets.batchUpdate({
+  await srv.spreadsheets.values.update({
     spreadsheetId,
-    requestBody: {
-      requests: [
-        {
-          deleteDimension: {
-            range: {
-              sheetId,
-              dimension: 'ROWS',
-              startIndex: existing.rowNum - 1,
-              endIndex: existing.rowNum,
-            },
-          },
-        },
-      ],
-    },
+    range: `Pesanan!A${existing.rowNum}:K${existing.rowNum}`,
+    valueInputOption: 'RAW',
+    requestBody: { values: [['', '', '', '', '', '', '', '', '', '', '']] },
   });
 }
 
@@ -177,7 +193,7 @@ export async function getAllItems() {
     range: 'Items!A2:E',
   });
 
-  const rows = res.data.values || [];
+  const rows = (res.data.values || []).filter((row) => row && safeString(row, 0).trim() !== '');
   return rows.map((row) => ({
     id: safeString(row, 0),
     nama: safeString(row, 1),
@@ -188,10 +204,25 @@ export async function getAllItems() {
 }
 
 export async function getItemById(id) {
-  const items = await getAllItems();
-  const idx = items.findIndex((i) => i.id === id);
+  const { srv, spreadsheetId } = getSheetsClient();
+  const res = await srv.spreadsheets.values.get({
+    spreadsheetId,
+    range: 'Items!A2:E',
+  });
+  const rawRows = res.data.values || [];
+  const idx = rawRows.findIndex((row) => row && safeString(row, 0).trim() === id);
   if (idx === -1) return null;
-  return { data: items[idx], rowNum: idx + 2 };
+
+  const row = rawRows[idx];
+  const data = {
+    id: safeString(row, 0),
+    nama: safeString(row, 1),
+    harga: safeInt(row, 2),
+    gambar_url: safeString(row, 3),
+    deskripsi: safeString(row, 4),
+  };
+
+  return { data, rowNum: idx + 2 };
 }
 
 export async function createItem(item) {
@@ -245,26 +276,11 @@ export async function deleteItem(id) {
   if (!existing) throw new Error('Item tidak ditemukan');
 
   const { srv, spreadsheetId } = getSheetsClient();
-  const sp = await srv.spreadsheets.get({ spreadsheetId });
-  const sheet = sp.data.sheets.find((s) => s.properties.title === 'Items');
-  const sheetId = sheet?.properties?.sheetId || 0;
-
-  await srv.spreadsheets.batchUpdate({
+  await srv.spreadsheets.values.update({
     spreadsheetId,
-    requestBody: {
-      requests: [
-        {
-          deleteDimension: {
-            range: {
-              sheetId,
-              dimension: 'ROWS',
-              startIndex: existing.rowNum - 1,
-              endIndex: existing.rowNum,
-            },
-          },
-        },
-      ],
-    },
+    range: `Items!A${existing.rowNum}:E${existing.rowNum}`,
+    valueInputOption: 'RAW',
+    requestBody: { values: [['', '', '', '', '']] },
   });
 }
 
@@ -277,7 +293,7 @@ export async function getAllModels() {
     range: 'Model!A2:E',
   });
 
-  const rows = res.data.values || [];
+  const rows = (res.data.values || []).filter((row) => row && safeString(row, 0).trim() !== '');
   return rows.map((row) => ({
     id: safeString(row, 0),
     nama: safeString(row, 1),
@@ -287,10 +303,24 @@ export async function getAllModels() {
 }
 
 export async function getModelById(id) {
-  const models = await getAllModels();
-  const idx = models.findIndex((m) => m.id === id);
+  const { srv, spreadsheetId } = getSheetsClient();
+  const res = await srv.spreadsheets.values.get({
+    spreadsheetId,
+    range: 'Model!A2:E',
+  });
+  const rawRows = res.data.values || [];
+  const idx = rawRows.findIndex((row) => row && safeString(row, 0).trim() === id);
   if (idx === -1) return null;
-  return { data: models[idx], rowNum: idx + 2 };
+
+  const row = rawRows[idx];
+  const data = {
+    id: safeString(row, 0),
+    nama: safeString(row, 1),
+    deskripsi: safeString(row, 2),
+    gambar_url: safeString(row, 3),
+  };
+
+  return { data, rowNum: idx + 2 };
 }
 
 export async function createModel(model) {
@@ -342,25 +372,10 @@ export async function deleteModel(id) {
   if (!existing) throw new Error('Model tidak ditemukan');
 
   const { srv, spreadsheetId } = getSheetsClient();
-  const sp = await srv.spreadsheets.get({ spreadsheetId });
-  const sheet = sp.data.sheets.find((s) => s.properties.title === 'Model');
-  const sheetId = sheet?.properties?.sheetId || 0;
-
-  await srv.spreadsheets.batchUpdate({
+  await srv.spreadsheets.values.update({
     spreadsheetId,
-    requestBody: {
-      requests: [
-        {
-          deleteDimension: {
-            range: {
-              sheetId,
-              dimension: 'ROWS',
-              startIndex: existing.rowNum - 1,
-              endIndex: existing.rowNum,
-            },
-          },
-        },
-      ],
-    },
+    range: `Model!A${existing.rowNum}:D${existing.rowNum}`,
+    valueInputOption: 'RAW',
+    requestBody: { values: [['', '', '', '']] },
   });
 }
