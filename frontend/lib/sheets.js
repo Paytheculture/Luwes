@@ -77,38 +77,53 @@ export async function getAllPesanan() {
 }
 
 export async function getPesananById(id) {
-  const { srv, spreadsheetId } = getSheetsClient();
-  const res = await srv.spreadsheets.values.get({
-    spreadsheetId,
-    range: 'Pesanan!A2:K',
-  });
-  const rawRows = res.data.values || [];
-  const targetId = decodeURIComponent(String(id || '')).trim().toLowerCase();
-  const idx = rawRows.findIndex((row) => row && safeString(row, 0).trim().toLowerCase() === targetId);
-  if (idx === -1) return null;
+  console.log(`[SHEETS DEBUG] getPesananById requested for ID: "${id}"`);
+  try {
+    const { srv, spreadsheetId } = getSheetsClient();
+    console.log(`[SHEETS DEBUG] Connected to Spreadsheet ID: "${spreadsheetId}"`);
+    const res = await srv.spreadsheets.values.get({
+      spreadsheetId,
+      range: 'Pesanan!A2:K',
+    });
+    const rawRows = res.data.values || [];
+    const availableIds = rawRows.map((r) => safeString(r, 0).trim()).filter(Boolean);
+    console.log(`[SHEETS DEBUG] Total rows in Pesanan sheet: ${rawRows.length}. Available IDs:`, availableIds);
 
-  const row = rawRows[idx];
-  let items = [];
-  const itemsJSON = safeString(row, 6);
-  if (itemsJSON) {
-    try { items = JSON.parse(itemsJSON); } catch (e) {}
+    const targetId = decodeURIComponent(String(id || '')).trim().toLowerCase();
+    const idx = rawRows.findIndex((row) => row && safeString(row, 0).trim().toLowerCase() === targetId);
+
+    if (idx === -1) {
+      console.error(`[SHEETS ERROR] ID "${id}" (cleaned: "${targetId}") NOT FOUND. List of available IDs in sheet:`, availableIds);
+      return null;
+    }
+
+    console.log(`[SHEETS SUCCESS] Found pesanan "${id}" at row index ${idx + 2}`);
+    const row = rawRows[idx];
+    let items = [];
+    const itemsJSON = safeString(row, 6);
+    if (itemsJSON) {
+      try { items = JSON.parse(itemsJSON); } catch (e) {}
+    }
+
+    const data = {
+      id: safeString(row, 0),
+      nama_pengantin: safeString(row, 1),
+      alamat: safeString(row, 2),
+      no_hp: safeString(row, 3),
+      tanggal_pasang: safeString(row, 4),
+      tanggal_bongkar: safeString(row, 5),
+      items,
+      total_harga: safeInt(row, 7),
+      status: safeString(row, 8),
+      catatan: safeString(row, 9),
+      created_at: safeString(row, 10),
+    };
+
+    return { data, rowNum: idx + 2 };
+  } catch (err) {
+    console.error(`[SHEETS EXCEPTION] Exception in getPesananById for ID "${id}":`, err);
+    throw err;
   }
-
-  const data = {
-    id: safeString(row, 0),
-    nama_pengantin: safeString(row, 1),
-    alamat: safeString(row, 2),
-    no_hp: safeString(row, 3),
-    tanggal_pasang: safeString(row, 4),
-    tanggal_bongkar: safeString(row, 5),
-    items,
-    total_harga: safeInt(row, 7),
-    status: safeString(row, 8),
-    catatan: safeString(row, 9),
-    created_at: safeString(row, 10),
-  };
-
-  return { data, rowNum: idx + 2 };
 }
 
 export async function createPesanan(pesanan) {

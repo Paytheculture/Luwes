@@ -89,16 +89,26 @@ func (s *SheetsService) GetAllPesanan() ([]models.Pesanan, error) {
 func (s *SheetsService) GetPesananByID(id string) (*models.Pesanan, int, error) {
 	pesananList, err := s.GetAllPesanan()
 	if err != nil {
+		fmt.Printf("[GO SHEETS ERROR] GetAllPesanan failed: %v\n", err)
 		return nil, 0, err
 	}
 
+	var allIDs []string
+	for _, p := range pesananList {
+		allIDs = append(allIDs, strings.TrimSpace(p.ID))
+	}
+
 	targetID := strings.ToLower(strings.TrimSpace(id))
+	fmt.Printf("[GO SHEETS DEBUG] GetPesananByID targetID: '%s' (raw: '%s'). Total rows: %d. Available IDs: %v\n", targetID, id, len(pesananList), allIDs)
+
 	for i, p := range pesananList {
 		if strings.ToLower(strings.TrimSpace(p.ID)) == targetID {
+			fmt.Printf("[GO SHEETS SUCCESS] Found match for ID '%s' at row %d\n", id, i+2)
 			return &p, i + 2, nil // +2 because row 1 is header, rows are 1-indexed
 		}
 	}
 
+	fmt.Printf("[GO SHEETS ERROR] Target ID '%s' NOT MATCHED in available IDs: %v\n", id, allIDs)
 	return nil, 0, fmt.Errorf("pesanan not found")
 }
 

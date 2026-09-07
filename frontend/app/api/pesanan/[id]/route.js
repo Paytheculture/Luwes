@@ -7,10 +7,13 @@ export async function GET(req, { params }) {
   try {
     const { id } = await params;
     const decodedId = decodeURIComponent(id);
+    console.log(`[API ROUTE DEBUG] GET /api/pesanan/[id] received request for id: "${id}" (decoded: "${decodedId}")`);
     const item = await getPesananById(decodedId);
     if (!item) {
+      console.warn(`[API ROUTE WARN] Pesanan ID "${decodedId}" not found in getPesananById.`);
       return NextResponse.json({ success: false, message: 'Pesanan tidak ditemukan' }, { status: 404 });
     }
+    console.log(`[API ROUTE SUCCESS] Returning pesanan data for ID "${decodedId}"`);
     return NextResponse.json({ success: true, data: item.data });
   } catch (err) {
     console.error('Error GET /api/pesanan/[id]:', err);

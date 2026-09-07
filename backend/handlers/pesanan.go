@@ -53,9 +53,11 @@ func (h *PesananHandler) GetAll(c *gin.Context) {
 
 func (h *PesananHandler) GetByID(c *gin.Context) {
 	id := c.Param("id")
+	fmt.Printf("[GO BACKEND DEBUG] GetByID requested for ID: '%s'\n", id)
 
 	pesanan, _, err := h.sheets.GetPesananByID(id)
 	if err != nil {
+		fmt.Printf("[GO BACKEND WARN] Pesanan ID '%s' NOT FOUND: %v\n", id, err)
 		c.JSON(http.StatusNotFound, models.APIResponse{
 			Success: false,
 			Message: "Pesanan tidak ditemukan",
@@ -63,6 +65,7 @@ func (h *PesananHandler) GetByID(c *gin.Context) {
 		return
 	}
 
+	fmt.Printf("[GO BACKEND SUCCESS] Found pesanan ID '%s', returning data.\n", id)
 	c.JSON(http.StatusOK, models.APIResponse{
 		Success: true,
 		Data:    pesanan,

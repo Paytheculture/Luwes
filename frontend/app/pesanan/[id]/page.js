@@ -116,12 +116,16 @@ export default function PesananDetailPage() {
   }, []);
 
   async function loadData() {
+    console.log(`[CLIENT DEBUG] loadData initiated for params.id: "${params?.id}"`);
     try {
       // Load pesanan dan katalog item secara bersamaan
       const [resPesanan, resItems] = await Promise.all([
-        api(`/api/pesanan/${params.id}`),
+        api(`/api/pesanan/${encodeURIComponent(params.id)}`),
         api('/api/items'),
       ]);
+
+      console.log(`[CLIENT DEBUG] resPesanan returned:`, resPesanan);
+      console.log(`[CLIENT DEBUG] resItems returned total items:`, resItems?.data?.length);
 
       const katalog = resItems.data || [];
       const katalogMap = {};
@@ -131,7 +135,7 @@ export default function PesananDetailPage() {
 
       // Enrich items pesanan dengan kategori terbaru dari katalog
       const pesananData = resPesanan.data;
-      if (pesananData.items) {
+      if (pesananData && pesananData.items) {
         pesananData.items = pesananData.items.map(item => {
           // item spesifikasi utama tidak perlu dicari di katalog
           if (item.id === 'model-dekorasi' || item.id === 'tema-warna') {
@@ -149,7 +153,7 @@ export default function PesananDetailPage() {
       setPesanan(pesananData);
       setForm(pesananData);
     } catch (err) {
-      console.error(err);
+      console.error(`[CLIENT ERROR] Error loading pesanan data for params.id "${params?.id}":`, err);
     } finally {
       setLoading(false);
     }
