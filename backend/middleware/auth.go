@@ -19,19 +19,20 @@ func AuthMiddleware() gin.HandlerFunc {
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		reqOrigin := c.Request.Header.Get("Origin")
-		origin := os.Getenv("FRONTEND_URL")
-		if origin == "" || origin == "*" {
-			if reqOrigin != "" {
-				origin = reqOrigin
-			} else {
-				origin = "*"
-			}
+		origin := reqOrigin
+		if origin == "" {
+			origin = os.Getenv("FRONTEND_URL")
+		}
+		if origin == "" {
+			origin = "*"
 		}
 
 		c.Header("Access-Control-Allow-Origin", origin)
 		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		c.Header("Access-Control-Allow-Headers", "Origin, Content-Type, Authorization")
-		c.Header("Access-Control-Allow-Credentials", "true")
+		c.Header("Access-Control-Allow-Headers", "Origin, Content-Type, Authorization, Accept, X-Requested-With")
+		if origin != "*" {
+			c.Header("Access-Control-Allow-Credentials", "true")
+		}
 
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(http.StatusNoContent)

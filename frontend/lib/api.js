@@ -34,10 +34,16 @@ export async function api(path, options = {}) {
     headers['Content-Type'] = 'application/json';
   }
 
-  const res = await fetch(`${API_URL}${path}`, {
-    ...options,
-    headers,
-  });
+  let res;
+  try {
+    res = await fetch(`${API_URL}${path}`, {
+      ...options,
+      headers,
+    });
+  } catch (err) {
+    console.error('Fetch API error:', err);
+    throw new Error('Gagal terhubung ke server backend. Pastikan server backend online dan URL backend diatur dengan benar.');
+  }
 
   if (res.status === 401) {
     removeToken();
