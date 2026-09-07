@@ -318,27 +318,50 @@ export default function TambahPesananPage() {
                         <h4 style={{ marginBottom: 'var(--sp-3)' }}>{item.nama}</h4>
                         
                         {isSelected ? (
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                            <label style={{ fontSize: 'var(--text-xs)', color: 'var(--primary-color)', textAlign: 'center', fontWeight: 500 }}>Jumlah (Ketik 0 batal)</label>
-                            <input 
-                              type="number" 
-                              min="0"
-                              value={selectedItem.qty} 
-                              onChange={(e) => handleQtyChange(item.id, e.target.value)}
-                              onBlur={() => handleQtyBlur(item.id)}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', padding: '0 var(--sp-2)' }}>
+                            <div style={{ position: 'relative', flex: 1 }}>
+                              <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', fontSize: '13px', fontWeight: '500', pointerEvents: 'none' }}>Qty:</span>
+                              <input 
+                                type="number" 
+                                min="0"
+                                value={selectedItem.qty} 
+                                onChange={(e) => handleQtyChange(item.id, e.target.value)}
+                                onBlur={() => handleQtyBlur(item.id)}
+                                style={{ 
+                                  width: '100%', 
+                                  textAlign: 'right', 
+                                  fontWeight: '600', 
+                                  border: '2px solid var(--primary-color)', 
+                                  borderRadius: 'var(--radius-md)', 
+                                  padding: '8px 12px 8px 40px', 
+                                  outline: 'none', 
+                                  background: 'rgba(var(--primary-color-rgb), 0.05)',
+                                  color: 'var(--primary-color)',
+                                  fontSize: '15px'
+                                }}
+                              />
+                            </div>
+                            <button 
+                              type="button" 
+                              onClick={() => removeItem(item.id)} 
                               style={{ 
-                                width: '100%', 
-                                textAlign: 'center', 
-                                fontWeight: '600',
-                                padding: 'var(--sp-2)',
-                                borderRadius: 'var(--radius-md)',
-                                border: '2px solid var(--primary-color)',
-                                backgroundColor: 'transparent',
-                                color: 'var(--text-primary)',
-                                outline: 'none',
-                                transition: 'all 0.2s ease'
-                              }}
-                            />
+                                background: 'none', 
+                                border: 'none', 
+                                color: 'var(--danger-color)', 
+                                cursor: 'pointer', 
+                                padding: '8px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderRadius: 'var(--radius-sm)',
+                                transition: 'background 0.2s'
+                              }} 
+                              onMouseOver={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'}
+                              onMouseOut={(e) => e.currentTarget.style.background = 'none'}
+                              title="Batal pilih"
+                            >
+                              ✕
+                            </button>
                           </div>
                         ) : (
                           <button type="button" className="btn btn-secondary" style={{ width: '100%', padding: 'var(--sp-2)' }} onClick={() => handleAdd(item)}>
