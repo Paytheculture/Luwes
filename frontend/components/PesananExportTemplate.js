@@ -8,7 +8,7 @@ const PesananExportTemplate = forwardRef(({ pesanan }, ref) => {
   const heroImage = pesanan.items?.find(item => item.gambar)?.gambar || null;
 
   // Derive Theme from Catatan or fallback
-  const tema = pesanan.catatan || 'Sesuai rincian item dekorasi';
+  const tema = pesanan.catatan || '';
 
   // Format date to match reference: 24 MEI 2026
   const dateStr = pesanan.tanggal_pasang ? new Date(pesanan.tanggal_pasang).toLocaleDateString('id-ID', {
