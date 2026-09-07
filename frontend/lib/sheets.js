@@ -190,7 +190,7 @@ export async function getAllItems() {
   const { srv, spreadsheetId } = getSheetsClient();
   const res = await srv.spreadsheets.values.get({
     spreadsheetId,
-    range: 'Items!A2:E',
+    range: 'Items!A2:F',
   });
 
   const rows = (res.data.values || []).filter((row) => row && safeString(row, 0).trim() !== '');
@@ -200,6 +200,7 @@ export async function getAllItems() {
     harga: safeInt(row, 2),
     gambar_url: safeString(row, 3),
     deskripsi: safeString(row, 4),
+    kategori: safeString(row, 5),
   }));
 }
 
@@ -207,7 +208,7 @@ export async function getItemById(id) {
   const { srv, spreadsheetId } = getSheetsClient();
   const res = await srv.spreadsheets.values.get({
     spreadsheetId,
-    range: 'Items!A2:E',
+    range: 'Items!A2:F',
   });
   const rawRows = res.data.values || [];
   const idx = rawRows.findIndex((row) => row && safeString(row, 0).trim() === id);
@@ -220,6 +221,7 @@ export async function getItemById(id) {
     harga: safeInt(row, 2),
     gambar_url: safeString(row, 3),
     deskripsi: safeString(row, 4),
+    kategori: safeString(row, 5),
   };
 
   return { data, rowNum: idx + 2 };
@@ -235,11 +237,12 @@ export async function createItem(item) {
     item.harga || 0,
     item.gambar_url || '',
     item.deskripsi || '',
+    item.kategori || '',
   ];
 
   await srv.spreadsheets.values.append({
     spreadsheetId,
-    range: 'Items!A:E',
+    range: 'Items!A:F',
     valueInputOption: 'RAW',
     requestBody: { values: [values] },
   });
@@ -258,9 +261,10 @@ export async function updateItem(id, item) {
     item.harga || 0,
     item.gambar_url || '',
     item.deskripsi || '',
+    item.kategori || '',
   ];
 
-  const range = `Items!A${existing.rowNum}:E${existing.rowNum}`;
+  const range = `Items!A${existing.rowNum}:F${existing.rowNum}`;
   await srv.spreadsheets.values.update({
     spreadsheetId,
     range,
@@ -278,9 +282,9 @@ export async function deleteItem(id) {
   const { srv, spreadsheetId } = getSheetsClient();
   await srv.spreadsheets.values.update({
     spreadsheetId,
-    range: `Items!A${existing.rowNum}:E${existing.rowNum}`,
+    range: `Items!A${existing.rowNum}:F${existing.rowNum}`,
     valueInputOption: 'RAW',
-    requestBody: { values: [['', '', '', '', '']] },
+    requestBody: { values: [['', '', '', '', '', '']] },
   });
 }
 

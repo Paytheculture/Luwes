@@ -18,6 +18,7 @@ export default function EditItemPage() {
     nama: '',
     deskripsi: '',
     gambar_url: '',
+    kategori: '',
   });
 
   useEffect(() => {
@@ -34,6 +35,7 @@ export default function EditItemPage() {
           nama: item.nama,
           deskripsi: item.deskripsi || '',
           gambar_url: item.gambar_url || '',
+          kategori: item.kategori || '',
         });
       }
     } catch (err) {
@@ -53,6 +55,7 @@ export default function EditItemPage() {
           nama: form.nama,
           deskripsi: form.deskripsi,
           gambar_url: form.gambar_url,
+          kategori: form.kategori,
         }),
       });
       router.push('/items');
@@ -96,16 +99,35 @@ export default function EditItemPage() {
               />
             </div>
 
-            <div className="form-group">
-              <label htmlFor="nama">Nama item</label>
-              <input
-                id="nama"
-                type="text"
-                value={form.nama}
-                onChange={(e) => setForm({ ...form, nama: e.target.value })}
-                required
-              />
-            </div>
+              <div className="form-group">
+                <label htmlFor="nama">Nama item</label>
+                <input
+                  id="nama"
+                  type="text"
+                  value={form.nama}
+                  onChange={(e) => setForm({ ...form, nama: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="kategori">Tim / Kategori</label>
+                <input
+                  id="kategori"
+                  type="text"
+                  list="tim-kategori"
+                  value={form.kategori}
+                  onChange={(e) => setForm({ ...form, kategori: e.target.value })}
+                  placeholder="Contoh: Tim Tenda"
+                  required
+                />
+                <datalist id="tim-kategori">
+                  <option value="Tim Pelaminan" />
+                  <option value="Tim Tenda" />
+                  <option value="Tim Bunga" />
+                  <option value="Tim Properti" />
+                </datalist>
+              </div>
 
             <div className="form-group">
               <label htmlFor="deskripsi">Deskripsi</label>

@@ -29,6 +29,7 @@ export async function POST(req) {
       harga: body.harga || 0,
       gambar_url: body.gambar_url || '',
       deskripsi: body.deskripsi || '',
+      kategori: body.kategori || '',
     });
 
     return NextResponse.json({ success: true, message: 'Item berhasil ditambahkan', data: item }, { status: 201 });

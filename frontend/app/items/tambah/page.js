@@ -16,6 +16,7 @@ export default function TambahItemPage() {
     nama: '',
     deskripsi: '',
     gambar_url: '',
+    kategori: '',
   });
 
   useEffect(() => {
@@ -32,6 +33,7 @@ export default function TambahItemPage() {
           nama: form.nama,
           deskripsi: form.deskripsi,
           gambar_url: form.gambar_url,
+          kategori: form.kategori,
         }),
       });
       router.push('/items');
@@ -75,6 +77,24 @@ export default function TambahItemPage() {
                   placeholder="Contoh: Kursi Tiffany Gold"
                   required
                 />
+              </div>
+              <div className="form-group">
+                <label htmlFor="kategori">Tim / Kategori</label>
+                <input
+                  id="kategori"
+                  type="text"
+                  list="tim-kategori"
+                  value={form.kategori}
+                  onChange={(e) => setForm({ ...form, kategori: e.target.value })}
+                  placeholder="Contoh: Tim Tenda"
+                  required
+                />
+                <datalist id="tim-kategori">
+                  <option value="Tim Pelaminan" />
+                  <option value="Tim Tenda" />
+                  <option value="Tim Bunga" />
+                  <option value="Tim Properti" />
+                </datalist>
               </div>
             </div>
 

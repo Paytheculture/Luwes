@@ -12,6 +12,7 @@ export async function PUT(req, { params }) {
       harga: body.harga || 0,
       gambar_url: body.gambar_url || '',
       deskripsi: body.deskripsi || '',
+      kategori: body.kategori || '',
     });
 
     return NextResponse.json({ success: true, message: 'Item berhasil diperbarui', data: updated });
