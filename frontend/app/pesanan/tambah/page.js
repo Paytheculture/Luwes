@@ -318,16 +318,27 @@ export default function TambahPesananPage() {
                         <h4 style={{ marginBottom: 'var(--sp-3)' }}>{item.nama}</h4>
                         
                         {isSelected ? (
-                          <div className="qty-control" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--sp-3)', background: 'var(--bg-elevated)', padding: 'var(--sp-2)', borderRadius: 'var(--radius-md)' }}>
-                            <button type="button" onClick={() => updateQty(item.id, -1)} style={{ width: '28px', height: '28px', borderRadius: '50%', border: '1px solid var(--border-color)', background: '#fff', cursor: 'pointer' }}>−</button>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                            <label style={{ fontSize: 'var(--text-xs)', color: 'var(--primary-color)', textAlign: 'center', fontWeight: 500 }}>Jumlah (Ketik 0 batal)</label>
                             <input 
                               type="number" 
+                              min="0"
                               value={selectedItem.qty} 
                               onChange={(e) => handleQtyChange(item.id, e.target.value)}
                               onBlur={() => handleQtyBlur(item.id)}
-                              style={{ width: '60px', textAlign: 'center', fontWeight: 'bold', border: '1px solid var(--border-color)', borderRadius: '4px', padding: '4px' }}
+                              style={{ 
+                                width: '100%', 
+                                textAlign: 'center', 
+                                fontWeight: '600',
+                                padding: 'var(--sp-2)',
+                                borderRadius: 'var(--radius-md)',
+                                border: '2px solid var(--primary-color)',
+                                backgroundColor: 'transparent',
+                                color: 'var(--text-primary)',
+                                outline: 'none',
+                                transition: 'all 0.2s ease'
+                              }}
                             />
-                            <button type="button" onClick={() => updateQty(item.id, 1)} style={{ width: '28px', height: '28px', borderRadius: '50%', border: '1px solid var(--border-color)', background: '#fff', cursor: 'pointer' }}>+</button>
                           </div>
                         ) : (
                           <button type="button" className="btn btn-secondary" style={{ width: '100%', padding: 'var(--sp-2)' }} onClick={() => handleAdd(item)}>
