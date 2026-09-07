@@ -24,6 +24,14 @@ func NewSheetsService() (*SheetsService, error) {
 
 	credJSON := os.Getenv("GOOGLE_CREDENTIALS_JSON")
 	if credJSON == "" {
+		// Bypass limit panjang karakter Back4App (1023 char limit)
+		cred1 := os.Getenv("GOOGLE_CRED_1")
+		cred2 := os.Getenv("GOOGLE_CRED_2")
+		cred3 := os.Getenv("GOOGLE_CRED_3")
+		credJSON = cred1 + cred2 + cred3
+	}
+
+	if credJSON == "" {
 		return nil, fmt.Errorf("GOOGLE_CREDENTIALS_JSON not set")
 	}
 
