@@ -15,6 +15,7 @@ export default function PesananDetailPage() {
   const params = useParams();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [pesanan, setPesanan] = useState(null);
+  const [katalogItems, setKatalogItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -74,6 +75,8 @@ export default function PesananDetailPage() {
       const katalog = resItems.data || [];
       const katalogMap = {};
       katalog.forEach(k => { katalogMap[k.id] = k; });
+
+      setKatalogItems(katalog);
 
       // Enrich items pesanan dengan kategori terbaru dari katalog
       const pesananData = resPesanan.data;
@@ -310,7 +313,7 @@ export default function PesananDetailPage() {
       )}
 
       {/* Hidden Export Template */}
-      <PesananExportTemplate pesanan={pesanan} ref={exportRef} />
+      <PesananExportTemplate pesanan={pesanan} katalogItems={katalogItems} ref={exportRef} />
     </div>
   );
 }

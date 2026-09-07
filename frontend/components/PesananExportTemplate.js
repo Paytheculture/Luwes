@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react';
 
-const PesananExportTemplate = forwardRef(({ pesanan }, ref) => {
+const PesananExportTemplate = forwardRef(({ pesanan, katalogItems }, ref) => {
   if (!pesanan) return null;
 
   const heroImage = pesanan.items?.find(item => item.gambar)?.gambar || null;
@@ -14,12 +14,25 @@ const PesananExportTemplate = forwardRef(({ pesanan }, ref) => {
 
   const alamat = pesanan.alamat || 'Belum ditentukan';
 
-  // Grouping by Category (Tim)
-  const groupedItems = (pesanan.items || []).reduce((acc, item) => {
-    const cat = item.id === 'model-dekorasi' || item.id === 'tema-warna' 
-      ? 'Spesifikasi Utama' 
-      : (item.kategori && item.kategori.trim() !== '' ? item.kategori : 'Lainnya / Belum Ada Tim');
-    
+  // Build katalog lookup map from prop
+  const katalogMap = {};
+  (katalogItems || []).forEach(k => { katalogMap[k.id] = k; });
+
+  // Enrich items dengan kategori dari katalog, langsung di template
+  const enrichedItems = (pesanan.items || []).map(item => {
+    if (item.id === 'model-dekorasi' || item.id === 'tema-warna') {
+      return { ...item, _resolvedKategori: 'Spesifikasi Utama' };
+    }
+    const fromKatalog = katalogMap[item.id];
+    const resolvedKat = (item.kategori && item.kategori.trim() !== '')
+      ? item.kategori
+      : (fromKatalog?.kategori || '');
+    return { ...item, _resolvedKategori: resolvedKat || 'Belum Ada Tim' };
+  });
+
+  // Grouping by resolved kategori
+  const groupedItems = enrichedItems.reduce((acc, item) => {
+    const cat = item._resolvedKategori;
     if (!acc[cat]) acc[cat] = [];
     acc[cat].push(item);
     return acc;
@@ -28,8 +41,8 @@ const PesananExportTemplate = forwardRef(({ pesanan }, ref) => {
   const sortedCategories = Object.keys(groupedItems).sort((a, b) => {
     if (a === 'Spesifikasi Utama') return -1;
     if (b === 'Spesifikasi Utama') return 1;
-    if (a.includes('Belum Ada Tim')) return 1;
-    if (b.includes('Belum Ada Tim')) return -1;
+    if (a === 'Belum Ada Tim') return 1;
+    if (b === 'Belum Ada Tim') return -1;
     return a.localeCompare(b);
   });
 
