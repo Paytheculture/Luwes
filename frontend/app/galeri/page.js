@@ -12,6 +12,8 @@ export default function GaleriPage() {
   const [models, setModels] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [selectedImage, setSelectedImage] = useState(null);
+
   useEffect(() => {
     if (!isLoggedIn()) { router.push('/login'); return; }
     fetchModels();
@@ -40,9 +42,6 @@ export default function GaleriPage() {
             <h2 className="page-title">Galeri Dekorasi</h2>
             <p>Eksplorasi referensi model dekorasi cantik yang sudah tersimpan di katalog.</p>
           </div>
-          <Link href="/models/tambah" className="btn btn-primary">
-            Tambah Model
-          </Link>
         </div>
 
         {loading ? (
@@ -52,7 +51,7 @@ export default function GaleriPage() {
         ) : (
           <div className="galeri-masonry">
             {models.map((model) => (
-              <div key={model.id} className="galeri-item">
+              <div key={model.id} className="galeri-item" onClick={() => setSelectedImage(model)}>
                 <img src={model.gambar_url} alt={model.nama} />
                 <div className="galeri-item-overlay">
                   <h4>{model.nama}</h4>
@@ -60,6 +59,25 @@ export default function GaleriPage() {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Modal Lightbox */}
+        {selectedImage && (
+          <div className="lightbox-overlay" onClick={() => setSelectedImage(null)}>
+            <div className="lightbox-content" onClick={e => e.stopPropagation()}>
+              <button className="lightbox-close" onClick={() => setSelectedImage(null)}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+              <img src={selectedImage.gambar_url} alt={selectedImage.nama} className="lightbox-img" />
+              <div className="lightbox-info">
+                <h3>{selectedImage.nama}</h3>
+                {selectedImage.deskripsi && <p>{selectedImage.deskripsi}</p>}
+              </div>
+            </div>
           </div>
         )}
       </main>
@@ -134,6 +152,82 @@ export default function GaleriPage() {
           -webkit-box-orient: vertical;
           overflow: hidden;
           text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        /* Lightbox Styles */
+        .lightbox-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.85);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+          padding: 20px;
+          backdrop-filter: blur(4px);
+        }
+
+        .lightbox-content {
+          position: relative;
+          background: var(--bg-surface);
+          border-radius: var(--radius-lg);
+          max-width: 900px;
+          width: 100%;
+          max-height: 90vh;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .lightbox-close {
+          position: absolute;
+          top: 16px;
+          right: 16px;
+          background: rgba(0, 0, 0, 0.5);
+          color: white;
+          border: none;
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          z-index: 10;
+          transition: background 0.2s ease;
+        }
+
+        .lightbox-close:hover {
+          background: rgba(0, 0, 0, 0.8);
+        }
+
+        .lightbox-img {
+          width: 100%;
+          height: auto;
+          max-height: calc(90vh - 100px);
+          object-fit: contain;
+          background: #000;
+        }
+
+        .lightbox-info {
+          padding: 24px;
+          background: var(--bg-surface);
+        }
+
+        .lightbox-info h3 {
+          margin: 0 0 8px 0;
+          font-size: 20px;
+        }
+
+        .lightbox-info p {
+          margin: 0;
+          color: var(--text-secondary);
+          font-size: 14px;
+          line-height: 1.5;
         }
       `}</style>
     </div>
