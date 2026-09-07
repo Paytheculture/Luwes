@@ -52,10 +52,40 @@ const PesananExportTemplate = forwardRef(({ pesanan }, ref) => {
         zIndex: -1000,
       }}
     >
+      {/* Kop Surat (Letterhead) */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderBottom: '4px solid #111',
+        paddingBottom: '20px',
+        marginBottom: '30px'
+      }}>
+        <div>
+          <h1 style={{ margin: 0, fontSize: '36px', fontWeight: '800', letterSpacing: '1px', textTransform: 'uppercase', color: '#111' }}>
+            Luwes Dekorasi
+          </h1>
+          <p style={{ margin: '5px 0 0 0', fontSize: '16px', color: '#555', letterSpacing: '0.5px' }}>
+            Wedding & Event Decoration Services
+          </p>
+        </div>
+        <div style={{
+          backgroundColor: '#111',
+          color: '#fff',
+          padding: '12px 24px',
+          borderRadius: '8px',
+          fontWeight: 'bold',
+          fontSize: '20px',
+          letterSpacing: '1px'
+        }}>
+          FORM CHECKLIST
+        </div>
+      </div>
+
       {/* Hero Image Section */}
       <div style={{
         width: '100%',
-        height: '350px',
+        height: '280px',
         backgroundColor: '#f5f5f5',
         marginBottom: '30px',
         borderRadius: '12px',
@@ -71,10 +101,10 @@ const PesananExportTemplate = forwardRef(({ pesanan }, ref) => {
             src={heroImage} 
             alt="Hero Dekorasi" 
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            crossOrigin="anonymous" // Important for html2canvas
+            crossOrigin="anonymous" 
           />
         ) : (
-          <span style={{ color: '#aaa', fontSize: '20px', letterSpacing: '2px' }}>[ LUWES DECORATION ]</span>
+          <span style={{ color: '#aaa', fontSize: '20px', letterSpacing: '2px' }}>[ GAMBAR MODEL DEKORASI ]</span>
         )}
       </div>
 
@@ -105,48 +135,53 @@ const PesananExportTemplate = forwardRef(({ pesanan }, ref) => {
         Catatan : Centang (V) Bila Sudah !
       </div>
 
-      {/* Items Table */}
-      <table style={{
-        width: '100%',
-        borderCollapse: 'collapse',
-        fontSize: '16px'
-      }}>
-        <thead>
-          <tr>
-            <th style={tableHeaderStyle}>No</th>
-            <th style={tableHeaderStyle}>Item</th>
-            <th style={tableHeaderStyle}>Jumlah</th>
-            <th style={tableHeaderStyle}>Checklist</th>
-          </tr>
-        </thead>
-        <tbody>
-          {pesanan.items && pesanan.items.length > 0 ? (
-            sortedCategories.map(kategori => (
-              <React.Fragment key={kategori}>
+      {/* Items per Kategori */}
+      {pesanan.items && pesanan.items.length > 0 ? (
+        sortedCategories.map(kategori => (
+          <div key={kategori} style={{ marginBottom: '40px' }}>
+            <h3 style={{
+              fontSize: '22px',
+              fontWeight: 'bold',
+              marginBottom: '15px',
+              borderBottom: '3px solid #eee',
+              paddingBottom: '10px',
+              color: '#111',
+              textTransform: 'uppercase',
+              letterSpacing: '1px'
+            }}>
+              {kategori}
+            </h3>
+            <table style={{
+              width: '100%',
+              borderCollapse: 'collapse',
+              fontSize: '16px'
+            }}>
+              <thead>
                 <tr>
-                  <td colSpan="4" style={{...tableCellStyle, backgroundColor: '#eee', fontWeight: 'bold'}}>
-                    {kategori}
-                  </td>
+                  <th style={{...tableHeaderStyle, width: '8%'}}>No</th>
+                  <th style={{...tableHeaderStyle, width: '60%', textAlign: 'left'}}>Nama Item</th>
+                  <th style={{...tableHeaderStyle, width: '12%'}}>Qty</th>
+                  <th style={{...tableHeaderStyle, width: '20%'}}>Checklist</th>
                 </tr>
+              </thead>
+              <tbody>
                 {groupedItems[kategori].map((item, idx) => (
                   <tr key={`${kategori}-${idx}`}>
                     <td style={{...tableCellStyle, textAlign: 'center'}}>{idx + 1}</td>
-                    <td style={tableCellStyle}>{item.nama}</td>
-                    <td style={{...tableCellStyle, textAlign: 'center'}}>{item.qty}</td>
+                    <td style={{...tableCellStyle, fontWeight: '500'}}>{item.nama}</td>
+                    <td style={{...tableCellStyle, textAlign: 'center', fontWeight: 'bold'}}>{item.qty}</td>
                     <td style={tableCellStyle}></td>
                   </tr>
                 ))}
-              </React.Fragment>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="4" style={{...tableCellStyle, textAlign: 'center', color: '#999'}}>
-                Tidak ada item terdaftar
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+              </tbody>
+            </table>
+          </div>
+        ))
+      ) : (
+        <div style={{ textAlign: 'center', color: '#999', padding: '40px', border: '2px dashed #ccc', borderRadius: '8px' }}>
+          Tidak ada item terdaftar untuk pesanan ini.
+        </div>
+      )}
     </div>
   );
 });
