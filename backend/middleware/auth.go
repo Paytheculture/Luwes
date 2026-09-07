@@ -18,9 +18,14 @@ func AuthMiddleware() gin.HandlerFunc {
 
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		reqOrigin := c.Request.Header.Get("Origin")
 		origin := os.Getenv("FRONTEND_URL")
-		if origin == "" {
-			origin = "*"
+		if origin == "" || origin == "*" {
+			if reqOrigin != "" {
+				origin = reqOrigin
+			} else {
+				origin = "*"
+			}
 		}
 
 		c.Header("Access-Control-Allow-Origin", origin)
