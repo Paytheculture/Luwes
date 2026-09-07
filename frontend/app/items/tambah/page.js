@@ -89,7 +89,7 @@ export default function TambahItemPage() {
                   <option value="" disabled>Pilih Tim / Kategori</option>
                   <option value="Tim Pelaminan">Tim Pelaminan</option>
                   <option value="Tim Tenda">Tim Tenda</option>
-                  <option value="Tim Bunga">Tim Bunga</option>
+                  <option value="Tim Dekorasi Bunga">Tim Dekorasi Bunga</option>
                   <option value="Tim Properti">Tim Properti</option>
                 </select>
               </div>
