@@ -4,7 +4,8 @@ import { getPesananById, updatePesanan, deletePesanan } from '@/lib/sheets';
 export async function GET(req, { params }) {
   try {
     const { id } = await params;
-    const item = await getPesananById(id);
+    const decodedId = decodeURIComponent(id);
+    const item = await getPesananById(decodedId);
     if (!item) {
       return NextResponse.json({ success: false, message: 'Pesanan tidak ditemukan' }, { status: 404 });
     }
@@ -21,8 +22,9 @@ export async function GET(req, { params }) {
 export async function PUT(req, { params }) {
   try {
     const { id } = await params;
+    const decodedId = decodeURIComponent(id);
     const body = await req.json();
-    const updated = await updatePesanan(id, body);
+    const updated = await updatePesanan(decodedId, body);
     return NextResponse.json({ success: true, message: 'Pesanan berhasil diperbarui', data: updated });
   } catch (err) {
     console.error('Error PUT /api/pesanan/[id]:', err);
@@ -36,7 +38,8 @@ export async function PUT(req, { params }) {
 export async function DELETE(req, { params }) {
   try {
     const { id } = await params;
-    await deletePesanan(id);
+    const decodedId = decodeURIComponent(id);
+    await deletePesanan(decodedId);
     return NextResponse.json({ success: true, message: 'Pesanan berhasil dihapus' });
   } catch (err) {
     console.error('Error DELETE /api/pesanan/[id]:', err);

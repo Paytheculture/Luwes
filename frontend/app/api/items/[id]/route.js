@@ -4,9 +4,10 @@ import { updateItem, deleteItem } from '@/lib/sheets';
 export async function PUT(req, { params }) {
   try {
     const { id } = await params;
+    const decodedId = decodeURIComponent(id);
     const body = await req.json();
 
-    const updated = await updateItem(id, {
+    const updated = await updateItem(decodedId, {
       nama: body.nama,
       harga: body.harga || 0,
       gambar_url: body.gambar_url || '',
@@ -26,7 +27,8 @@ export async function PUT(req, { params }) {
 export async function DELETE(req, { params }) {
   try {
     const { id } = await params;
-    await deleteItem(id);
+    const decodedId = decodeURIComponent(id);
+    await deleteItem(decodedId);
     return NextResponse.json({ success: true, message: 'Item berhasil dihapus' });
   } catch (err) {
     console.error('Error DELETE /api/items/[id]:', err);

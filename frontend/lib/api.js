@@ -36,7 +36,8 @@ export async function api(path, options = {}) {
 
   let res;
   try {
-    res = await fetch(`${API_URL}${path}`, {
+    const targetUrl = encodeURI(`${API_URL}${path}`);
+    res = await fetch(targetUrl, {
       ...options,
       headers,
     });

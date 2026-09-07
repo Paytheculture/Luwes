@@ -4,8 +4,9 @@ import { updateModel, deleteModel } from '@/lib/sheets';
 export async function PUT(req, { params }) {
   try {
     const { id } = await params;
+    const decodedId = decodeURIComponent(id);
     const body = await req.json();
-    const updated = await updateModel(id, body);
+    const updated = await updateModel(decodedId, body);
     return NextResponse.json({ success: true, message: 'Model dekorasi berhasil diperbarui', data: updated });
   } catch (err) {
     console.error('Error PUT /api/models/[id]:', err);
@@ -19,7 +20,8 @@ export async function PUT(req, { params }) {
 export async function DELETE(req, { params }) {
   try {
     const { id } = await params;
-    await deleteModel(id);
+    const decodedId = decodeURIComponent(id);
+    await deleteModel(decodedId);
     return NextResponse.json({ success: true, message: 'Model dekorasi berhasil dihapus' });
   } catch (err) {
     console.error('Error DELETE /api/models/[id]:', err);
