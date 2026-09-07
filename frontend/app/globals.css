@@ -1075,71 +1075,260 @@ tbody tr:hover {
 .mobile-toggle {
   display: none;
   position: fixed;
-  top: var(--sp-4);
-  left: var(--sp-4);
+  top: var(--sp-3);
+  left: var(--sp-3);
   z-index: 150;
   background: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
   color: var(--text-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* Sidebar overlay for mobile */
+.sidebar-overlay {
+  display: none;
 }
 
 /* ==============================
-   Responsive
+   Responsive: Tablet (1024px)
+   ============================== */
+
+@media (max-width: 1024px) {
+  .main-content {
+    padding: var(--sp-6) var(--sp-6);
+  }
+
+  .card {
+    padding: var(--sp-5) var(--sp-6);
+  }
+
+  .stats-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .item-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: var(--sp-3);
+  }
+}
+
+/* ==============================
+   Responsive: Mobile (768px)
    ============================== */
 
 @media (max-width: 768px) {
   .mobile-toggle {
     display: flex;
+    align-items: center;
+    gap: var(--sp-2);
   }
 
   .sidebar {
     transform: translateX(-100%);
+    box-shadow: none;
   }
 
   .sidebar.open {
     transform: translateX(0);
+    box-shadow: 8px 0 30px rgba(0, 0, 0, 0.08);
   }
 
   .main-content {
     margin-left: 0;
-    padding: var(--sp-6) var(--sp-4);
-    padding-top: var(--sp-16);
+    padding: var(--sp-4) var(--sp-4);
+    padding-top: 60px;
+    max-width: 100%;
   }
 
+  /* Page header stacks on mobile */
   .page-header {
     flex-direction: column;
+    gap: var(--sp-3);
+    margin-bottom: var(--sp-5);
   }
 
+  .page-header h2 {
+    font-size: var(--text-xl);
+  }
+
+  .page-header > div:last-child {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    width: 100%;
+  }
+
+  .page-header > div:last-child .btn {
+    flex: 1;
+    justify-content: center;
+    min-width: 0;
+  }
+
+  /* Cards get tighter padding */
+  .card {
+    padding: var(--sp-4) var(--sp-5);
+  }
+
+  /* Forms go single column */
   .form-row {
     grid-template-columns: 1fr;
+    gap: var(--sp-4);
   }
 
+  /* Detail grid stacks */
   .detail-grid {
     grid-template-columns: 1fr;
+    gap: var(--sp-4);
   }
 
+  /* Stats: 2 column on tablet-ish mobile */
   .stats-row {
     grid-template-columns: 1fr 1fr;
+    gap: var(--sp-3);
   }
 
+  .stat-card {
+    padding: var(--sp-4) var(--sp-5);
+  }
+
+  .stat-card .stat-value {
+    font-size: var(--text-xl);
+  }
+
+  /* Item grid: 2 columns */
   .item-grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--sp-3);
+  }
+
+  .item-card-body {
+    padding: var(--sp-2) var(--sp-3);
+  }
+
+  .item-card-body h4 {
+    font-size: var(--text-xs);
+  }
+
+  /* Table becomes horizontally scrollable */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   table {
-    font-size: var(--text-xs);
+    min-width: 560px;
   }
 
   thead th, tbody td {
     padding: var(--sp-3);
+    font-size: var(--text-xs);
+  }
+
+  /* Table toolbar stacks */
+  .table-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--sp-3);
+    padding: var(--sp-3) var(--sp-4);
+  }
+
+  .table-toolbar input,
+  .table-toolbar select {
+    max-width: 100%;
+  }
+
+  /* Modal responsive */
+  .modal {
+    padding: var(--sp-5);
+    margin: var(--sp-4);
+  }
+
+  /* Selected items list */
+  .selected-item-row {
+    gap: var(--sp-2);
+    padding: var(--sp-2) 0;
+  }
+
+  .selected-item-thumb {
+    width: 40px;
+    height: 30px;
+  }
+
+  /* Upload zone */
+  .upload-zone {
+    padding: var(--sp-6) var(--sp-4);
+  }
+
+  /* Toast positioning */
+  .toast {
+    left: var(--sp-4);
+    right: var(--sp-4);
+    bottom: var(--sp-4);
+    max-width: none;
+  }
+
+  /* Form actions become full width */
+  .form-actions {
+    flex-direction: column;
+    gap: var(--sp-3);
+  }
+
+  .form-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Qty input in item cards */
+  .item-card input[type="number"] {
+    font-size: 14px;
+    padding: 6px 8px 6px 34px;
   }
 }
+
+/* ==============================
+   Responsive: Small phone (480px)
+   ============================== */
 
 @media (max-width: 480px) {
   .stats-row {
     grid-template-columns: 1fr;
+    gap: var(--sp-2);
+  }
+
+  .stat-card {
+    padding: var(--sp-3) var(--sp-4);
+  }
+
+  .item-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--sp-2);
+  }
+
+  .item-card-img {
+    aspect-ratio: 1 / 1;
+  }
+
+  .page-header h2 {
+    font-size: var(--text-lg);
+  }
+
+  .btn {
+    padding: var(--sp-2) var(--sp-4);
+    font-size: var(--text-xs);
+  }
+
+  .card {
+    padding: var(--sp-3) var(--sp-4);
+  }
+
+  .brand-name {
+    font-size: 1.1rem;
+  }
+
+  .brand-tagline {
+    font-size: 0.5rem;
   }
 }
 
@@ -1168,3 +1357,28 @@ a:focus:not(:focus-visible),
 input:focus:not(:focus-visible) {
   outline: none;
 }
+
+/* ==============================
+   Touch-friendly: minimum 44px tap targets
+   ============================== */
+
+@media (pointer: coarse) {
+  .sidebar-nav a {
+    padding: var(--sp-4) var(--sp-4);
+    min-height: 44px;
+  }
+
+  .btn {
+    min-height: 44px;
+  }
+
+  .btn-icon {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  tbody td {
+    padding: var(--sp-4) var(--sp-3);
+  }
+}
+
