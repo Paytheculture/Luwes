@@ -68,15 +68,13 @@ const PesananExportTemplate = forwardRef(({ pesanan, katalogItems }, ref) => {
   return (
     <div
       ref={ref}
+      className="print-template"
       style={{
         width: '794px',
         minHeight: '1123px',
         backgroundColor: '#ffffff',
         fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
         color: '#000000',
-        position: 'absolute',
-        top: '-99999px',
-        left: '-99999px',
         boxSizing: 'border-box',
         padding: '48px',
       }}
@@ -130,10 +128,6 @@ const PesananExportTemplate = forwardRef(({ pesanan, katalogItems }, ref) => {
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px', marginBottom: '8px' }}>
             <span style={{ color: '#555555' }}>Tanggal Pasang:</span>
             <span style={{ fontWeight: '600' }}>{dateStr}</span>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px' }}>
-            <span style={{ color: '#555555' }}>Status:</span>
-            <span style={{ fontWeight: '600' }}>{pesanan.status || 'Pending'}</span>
           </div>
         </div>
       </div>

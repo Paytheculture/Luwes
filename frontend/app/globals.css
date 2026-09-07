@@ -1446,3 +1446,52 @@ input:focus:not(:focus-visible) {
   }
 }
 
+
+/* ==============================
+   Print Styles (Export PDF)
+   ============================== */
+.print-template {
+  position: absolute;
+  top: -99999px;
+  left: -99999px;
+}
+
+@media print {
+  /* Hide main app elements when printing */
+  .app-layout > .sidebar,
+  .app-layout > .main-content,
+  .modal-overlay,
+  .no-print {
+    display: none !important;
+  }
+  
+  /* Reset layout constraints */
+  body, .app-layout {
+    background: #ffffff !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  /* Show and position the template */
+  .print-template {
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    display: block !important;
+    width: 100% !important;
+    /* Prevent cutting rows */
+    page-break-inside: avoid;
+  }
+  
+  /* Prevent cutting inside table rows */
+  .print-template tr, .print-template img {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  @page {
+    margin: 0;
+    size: A4 portrait;
+  }
+}
