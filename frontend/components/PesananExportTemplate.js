@@ -77,7 +77,7 @@ const PesananExportTemplate = forwardRef(({ pesanan, katalogItems }, ref) => {
         top: '-99999px',
         left: '-99999px',
         boxSizing: 'border-box',
-        padding: '40px',
+        padding: '48px',
       }}
     >
       {/* ===== HEADER ===== */}
@@ -85,81 +85,61 @@ const PesananExportTemplate = forwardRef(({ pesanan, katalogItems }, ref) => {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'flex-start',
-        borderBottom: '2px solid #000000',
-        paddingBottom: '24px',
-        marginBottom: '32px'
+        marginBottom: '40px'
       }}>
         <img
           src="/logo-luwes.png"
           alt="Luwes Dekorasi"
-          style={{ height: '70px', width: 'auto', objectFit: 'contain' }}
+          style={{ height: '56px', width: 'auto', objectFit: 'contain' }}
           crossOrigin="anonymous"
         />
-        <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-          <div style={{ fontSize: '12px', fontWeight: 'bold', maxWidth: '250px', lineHeight: '1.4', marginBottom: '12px' }}>
-            Kepuhrejo, Kaliboto, Kec. Tarokan, Kabupaten Kediri, Jawa Timur 64152
+        <div style={{ textAlign: 'right', fontSize: '11px', lineHeight: '1.4', color: '#555555', maxWidth: '200px' }}>
+          Kepuhrejo, Kaliboto, Kec. Tarokan,<br/>Kabupaten Kediri, Jawa Timur 64152
+        </div>
+      </div>
+
+      {/* ===== TITLE & META ===== */}
+      <div style={{ marginBottom: '40px' }}>
+        <div style={{ fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px', color: '#888888' }}>
+          Manifest Operasional &bull; {pesanan.id || 'N/A'}
+        </div>
+        <div style={{ fontSize: '36px', fontWeight: 'bold', letterSpacing: '-1px', lineHeight: '1.1', marginBottom: '24px' }}>
+          {pesanan.nama_pengantin || '-'}
+        </div>
+        
+        <div style={{ display: 'flex', gap: '48px', borderTop: '2px solid #000000', borderBottom: '1px solid #e0e0e0', padding: '16px 0' }}>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: '11px', color: '#888888', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Jadwal Pemasangan</div>
+            <div style={{ fontSize: '14px', fontWeight: 'bold' }}>{dateStr}</div>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: '10px', color: '#555555', fontWeight: 'bold', letterSpacing: '0.5px' }}>
-                ID PESANAN
-              </div>
-              <div style={{ fontSize: '13px', fontWeight: 'bold' }}>
-                {pesanan.id || 'N/A'}
-              </div>
-            </div>
-            <img
-              src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}&margin=0`}
-              alt="QR Code"
-              style={{ width: '50px', height: '50px' }}
-              crossOrigin="anonymous"
-            />
+          <div style={{ flex: 2 }}>
+            <div style={{ fontSize: '11px', color: '#888888', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Lokasi Pemasangan</div>
+            <div style={{ fontSize: '14px', fontWeight: 'bold' }}>{pesanan.alamat || '-'}</div>
           </div>
         </div>
       </div>
 
-      {/* ===== INFO GRID ===== */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '24px',
-        marginBottom: '40px',
-        fontSize: '14px',
-        lineHeight: '1.5'
-      }}>
-        <div>
-          <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>Klien</div>
-          <div style={{ fontSize: '18px', marginBottom: '16px' }}>{pesanan.nama_pengantin || '-'}</div>
-          
-          <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>Lokasi Pemasangan</div>
-          <div style={{ wordBreak: 'break-word' }}>{pesanan.alamat || '-'}</div>
+      {/* ===== CATATAN & IMAGE ===== */}
+      <div style={{ display: 'flex', gap: '32px', marginBottom: '48px' }}>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: '11px', color: '#888888', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Catatan / Tema</div>
+          <div style={{ fontSize: '14px', lineHeight: '1.5' }}>{pesanan.catatan || 'Tidak ada catatan.'}</div>
         </div>
-        <div>
-          <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>Jadwal Pemasangan</div>
-          <div style={{ marginBottom: '16px' }}>{dateStr}</div>
-
-          <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>Catatan / Tema</div>
-          <div style={{ wordBreak: 'break-word' }}>{pesanan.catatan || '-'}</div>
-        </div>
-      </div>
-
-      {/* ===== HERO IMAGE ===== */}
-      {heroImage && (
-        <div style={{ marginBottom: '40px' }}>
-          <div style={{ fontWeight: 'bold', fontSize: '14px', marginBottom: '12px', borderBottom: '1px solid #000000', paddingBottom: '8px' }}>
-            Referensi Visual
+        {heroImage && (
+          <div style={{ width: '300px' }}>
+             <div style={{ fontSize: '11px', color: '#888888', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Referensi Visual</div>
+             <img
+                src={heroImage}
+                alt="Referensi"
+                style={{ width: '100%', maxHeight: '200px', objectFit: 'cover', border: '1px solid #e0e0e0' }}
+                crossOrigin="anonymous"
+              />
           </div>
-          <img
-            src={heroImage}
-            alt="Referensi"
-            style={{ width: '100%', maxHeight: '300px', objectFit: 'contain', border: '1px solid #e0e0e0', padding: '4px' }}
-            crossOrigin="anonymous"
-          />
-        </div>
-      )}
+        )}
+      </div>
 
       {/* ===== TABLES ===== */}
-      <div style={{ marginBottom: '16px', fontWeight: 'bold', fontSize: '16px' }}>
+      <div style={{ marginBottom: '16px', fontSize: '18px', fontWeight: 'bold', letterSpacing: '-0.5px' }}>
         Daftar Kebutuhan Tim
       </div>
 
@@ -170,37 +150,31 @@ const PesananExportTemplate = forwardRef(({ pesanan, katalogItems }, ref) => {
               backgroundColor: '#000000',
               color: '#ffffff',
               padding: '8px 12px',
-              fontSize: '14px',
+              fontSize: '13px',
               fontWeight: 'bold',
+              letterSpacing: '0.5px',
+              textTransform: 'uppercase'
             }}>
               {kategori}
             </div>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
-              <thead>
-                <tr style={{ borderBottom: '2px solid #000000' }}>
-                  <th style={{ padding: '12px', width: '40px', textAlign: 'left', fontWeight: 'bold' }}>No</th>
-                  <th style={{ padding: '12px', textAlign: 'left', fontWeight: 'bold' }}>Deskripsi Barang</th>
-                  <th style={{ padding: '12px', width: '60px', textAlign: 'center', fontWeight: 'bold' }}>Qty</th>
-                  <th style={{ padding: '12px', width: '80px', textAlign: 'center', fontWeight: 'bold' }}>Check</th>
-                </tr>
-              </thead>
               <tbody>
                 {groupedItems[kategori].map((item, idx) => (
                   <tr key={idx} style={{ borderBottom: '1px solid #e0e0e0' }}>
-                    <td style={{ padding: '12px', color: '#555555', fontVariantNumeric: 'tabular-nums' }}>
+                    <td style={{ padding: '12px', width: '40px', color: '#888888', fontVariantNumeric: 'tabular-nums' }}>
                       {String(idx + 1).padStart(2, '0')}
                     </td>
-                    <td style={{ padding: '12px', wordBreak: 'break-word', lineHeight: '1.4' }}>
+                    <td style={{ padding: '12px', lineHeight: '1.4' }}>
                       {item.nama}
                     </td>
-                    <td style={{ padding: '12px', textAlign: 'center', fontWeight: 'bold' }}>
+                    <td style={{ padding: '12px', width: '60px', textAlign: 'center', fontWeight: 'bold' }}>
                       {item.qty}
                     </td>
-                    <td style={{ padding: '12px', textAlign: 'center' }}>
+                    <td style={{ padding: '12px', width: '60px', textAlign: 'center' }}>
                       <div style={{
-                        width: '20px',
-                        height: '20px',
-                        border: '1px solid #000000',
+                        width: '16px',
+                        height: '16px',
+                        border: '1.5px solid #000000',
                         margin: '0 auto',
                       }} />
                     </td>
@@ -211,23 +185,36 @@ const PesananExportTemplate = forwardRef(({ pesanan, katalogItems }, ref) => {
           </div>
         ))
       ) : (
-        <div style={{ textAlign: 'center', color: '#888888', padding: '40px' }}>
+        <div style={{ textAlign: 'center', color: '#888888', padding: '40px', border: '1px dashed #e0e0e0' }}>
           Tidak ada item terdaftar.
         </div>
       )}
 
-      {/* ===== FOOTER ===== */}
+      {/* ===== FOOTER & QR CODE ===== */}
       <div style={{
-        marginTop: '40px',
-        paddingTop: '16px',
-        borderTop: '1px solid #000000',
+        marginTop: '64px',
+        paddingTop: '24px',
+        borderTop: '2px solid #000000',
         display: 'flex',
         justifyContent: 'space-between',
-        fontSize: '12px',
-        color: '#555555'
+        alignItems: 'flex-end'
       }}>
-        <span>Dicetak pada: {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
-        <span>Dokumen Internal Luwes Dekorasi</span>
+        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+          <img
+            src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}&margin=0`}
+            alt="QR Code"
+            style={{ width: '64px', height: '64px' }}
+            crossOrigin="anonymous"
+          />
+          <div>
+            <div style={{ fontSize: '11px', fontWeight: 'bold', marginBottom: '2px' }}>Pindai untuk akses digital</div>
+            <div style={{ fontSize: '11px', color: '#555555' }}>Gunakan kamera HP untuk membuka dokumen ini.</div>
+          </div>
+        </div>
+        <div style={{ textAlign: 'right', fontSize: '11px', color: '#555555' }}>
+          <div>Dicetak pada: {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
+          <div style={{ marginTop: '2px' }}>Dokumen Internal Luwes Dekorasi</div>
+        </div>
       </div>
     </div>
   );
