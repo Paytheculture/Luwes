@@ -3,15 +3,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  async rewrites() {
-    const backendUrl = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-    return [
-      {
-        source: '/api/:path*',
-        destination: `${backendUrl.replace(/\/+$/, '')}/api/:path*`,
-      },
-    ];
-  },
+  // We don't need rewrites because we are using Next.js API Routes directly.
+  // Using rewrites to localhost:8080 causes Vercel to return 404 DNS_HOSTNAME_RESOLVED_PRIVATE
 };
 
 export default nextConfig;

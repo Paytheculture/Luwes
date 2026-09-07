@@ -35,14 +35,15 @@ export async function api(path, options = {}) {
   }
 
   let res;
+  let targetUrl = '';
   try {
-    const targetUrl = encodeURI(`${API_URL}${path}`);
+    targetUrl = encodeURI(`${API_URL}${path}`);
     res = await fetch(targetUrl, {
       ...options,
       headers,
     });
   } catch (err) {
-    console.error('Fetch API error:', err);
+    console.error(`[API FETCH ERROR] Network error for ${targetUrl}:`, err);
     throw new Error('Gagal terhubung ke server backend. Pastikan server backend online dan URL backend diatur dengan benar.');
   }
 
@@ -52,6 +53,13 @@ export async function api(path, options = {}) {
       window.location.href = '/login';
     }
     throw new Error('Unauthorized');
+  }
+
+  const contentType = res.headers.get('content-type') || '';
+  if (!contentType.includes('application/json')) {
+    const textData = await res.text();
+    console.error(`[API ERROR] Expected JSON but got ${contentType} for ${targetUrl}. Status: ${res.status}. Body:`, textData.substring(0, 500));
+    throw new Error(`Server API Error (${res.status}): Path ${path} tidak mengembalikan data JSON yang valid. Silakan cek URL Backend.`);
   }
 
   const data = await res.json();
