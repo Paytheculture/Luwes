@@ -325,9 +325,7 @@ export default function TambahPesananPage() {
                     <div className="selected-item-info" style={{ flex: 1 }}>
                       <h5>{item.nama}</h5>
                       <div className="qty-control" style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}>
-                        <button type="button" onClick={() => updateQty(item.id, -1)}>−</button>
-                        <span>{item.qty}</span>
-                        <button type="button" onClick={() => updateQty(item.id, 1)}>+</button>
+                        <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)' }}>Kuantitas: {item.qty}</span>
                       </div>
                     </div>
                     <button
