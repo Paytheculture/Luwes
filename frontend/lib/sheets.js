@@ -131,8 +131,9 @@ export async function createPesanan(pesanan) {
 
   await srv.spreadsheets.values.append({
     spreadsheetId,
-    range: 'Pesanan!A:K',
+    range: 'Pesanan!A:A',
     valueInputOption: 'RAW',
+    insertDataOption: 'INSERT_ROWS',
     requestBody: { values: [values] },
   });
 
@@ -242,8 +243,9 @@ export async function createItem(item) {
 
   await srv.spreadsheets.values.append({
     spreadsheetId,
-    range: 'Items!A:F',
+    range: 'Items!A:A',
     valueInputOption: 'RAW',
+    insertDataOption: 'INSERT_ROWS',
     requestBody: { values: [values] },
   });
 
@@ -340,8 +342,9 @@ export async function createModel(model) {
 
   await srv.spreadsheets.values.append({
     spreadsheetId,
-    range: 'Model!A:E',
+    range: 'Model!A:A',
     valueInputOption: 'RAW',
+    insertDataOption: 'INSERT_ROWS',
     requestBody: { values: [values] },
   });
 
