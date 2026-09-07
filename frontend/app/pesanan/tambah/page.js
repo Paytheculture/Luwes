@@ -68,11 +68,37 @@ export default function TambahPesananPage() {
       const existing = prev.find(s => s.id === id);
       if (!existing) return prev;
       
-      const newQty = existing.qty + delta;
+      const currentQty = parseInt(existing.qty) || 0;
+      const newQty = currentQty + delta;
+      
       if (newQty <= 0) {
         return prev.filter(s => s.id !== id);
       }
       return prev.map(s => s.id === id ? { ...s, qty: newQty } : s);
+    });
+  }
+
+  function handleQtyChange(id, value) {
+    setSelectedItems(prev => {
+      const existing = prev.find(s => s.id === id);
+      if (!existing) return prev;
+      
+      // Allow empty string for intermediate typing
+      const newQty = value === '' ? '' : parseInt(value) || 0;
+      
+      return prev.map(s => s.id === id ? { ...s, qty: newQty } : s);
+    });
+  }
+
+  function handleQtyBlur(id) {
+    setSelectedItems(prev => {
+      const existing = prev.find(s => s.id === id);
+      if (!existing) return prev;
+      
+      if (existing.qty === '' || existing.qty <= 0) {
+        return prev.filter(s => s.id !== id);
+      }
+      return prev;
     });
   }
 
@@ -294,7 +320,13 @@ export default function TambahPesananPage() {
                         {isSelected ? (
                           <div className="qty-control" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--sp-3)', background: 'var(--bg-elevated)', padding: 'var(--sp-2)', borderRadius: 'var(--radius-md)' }}>
                             <button type="button" onClick={() => updateQty(item.id, -1)} style={{ width: '28px', height: '28px', borderRadius: '50%', border: '1px solid var(--border-color)', background: '#fff', cursor: 'pointer' }}>−</button>
-                            <span style={{ fontWeight: 'bold', minWidth: '20px', textAlign: 'center' }}>{selectedItem.qty}</span>
+                            <input 
+                              type="number" 
+                              value={selectedItem.qty} 
+                              onChange={(e) => handleQtyChange(item.id, e.target.value)}
+                              onBlur={() => handleQtyBlur(item.id)}
+                              style={{ width: '60px', textAlign: 'center', fontWeight: 'bold', border: '1px solid var(--border-color)', borderRadius: '4px', padding: '4px' }}
+                            />
                             <button type="button" onClick={() => updateQty(item.id, 1)} style={{ width: '28px', height: '28px', borderRadius: '50%', border: '1px solid var(--border-color)', background: '#fff', cursor: 'pointer' }}>+</button>
                           </div>
                         ) : (
