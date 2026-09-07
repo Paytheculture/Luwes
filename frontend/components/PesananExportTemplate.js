@@ -66,175 +66,216 @@ const PesananExportTemplate = forwardRef(({ pesanan, katalogItems }, ref) => {
   });
 
   return (
-    <div 
+    <div
       ref={ref}
       style={{
-        width: '800px',
+        width: '794px',
+        minHeight: '1123px',
         backgroundColor: '#ffffff',
-        padding: '50px 60px',
-        fontFamily: 'var(--font-outfit), sans-serif',
-        color: '#000000',
+        fontFamily: "'Georgia', 'Times New Roman', serif",
+        color: '#1a1a1a',
         position: 'absolute',
-        top: '-10000px',
-        left: '-10000px',
-        zIndex: -1000,
+        top: '-99999px',
+        left: '-99999px',
+        boxSizing: 'border-box',
       }}
     >
-      {/* Premium Minimalist Letterhead */}
+      {/* ===== KOP SURAT ===== */}
       <div style={{
-        textAlign: 'center',
-        borderBottom: '2px solid #000',
-        paddingBottom: '24px',
-        marginBottom: '40px'
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '32px 48px 24px',
+        borderBottom: '3px solid #c9a84c',
+        backgroundColor: '#fff',
       }}>
-        <h1 style={{ 
-          fontFamily: 'Georgia, serif', 
-          fontSize: '48px', 
-          fontWeight: 'normal', 
-          margin: '0', 
-          letterSpacing: '6px',
-          color: '#000'
-        }}>
-          LUWES
-        </h1>
-        <div style={{ 
-          fontSize: '14px', 
-          letterSpacing: '8px', 
-          textTransform: 'uppercase', 
-          marginBottom: '16px',
-          color: '#000',
-          fontWeight: '500'
-        }}>
-          Decoration
-        </div>
-        <div style={{ fontSize: '13px', color: '#444', letterSpacing: '0.5px' }}>
-          Kepuhrejo, Kaliboto, Kec. Tarokan, Kabupaten Kediri, Jawa Timur 64152
+        {/* Logo */}
+        <img
+          src="/logo.png"
+          alt="Luwes Decoration"
+          style={{ height: '64px', width: 'auto', objectFit: 'contain' }}
+          crossOrigin="anonymous"
+        />
+
+        {/* Info perusahaan - rata kanan */}
+        <div style={{ textAlign: 'right', fontFamily: "'Arial', sans-serif" }}>
+          <div style={{ fontSize: '11px', color: '#888', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '4px' }}>
+            Dokumen Kerja
+          </div>
+          <div style={{ fontSize: '11px', color: '#555', lineHeight: '1.6' }}>
+            Dsn. Kepuhrejo, Kaliboto<br />
+            Kec. Tarokan, Kabupaten Kediri<br />
+            Jawa Timur 64152
+          </div>
         </div>
       </div>
 
-      {/* Info Layout */}
+      {/* ===== JUDUL DOKUMEN ===== */}
       <div style={{
+        padding: '20px 48px 16px',
+        borderBottom: '1px solid #e8e0d0',
         display: 'flex',
         justifyContent: 'space-between',
-        marginBottom: '40px',
-        fontSize: '15px'
+        alignItems: 'flex-end',
+        backgroundColor: '#fafaf8',
       }}>
         <div>
-          <div style={{ marginBottom: '8px' }}>
-            <span style={{ color: '#666', display: 'inline-block', width: '120px' }}>Klien</span>
-            <strong style={{ fontSize: '18px' }}>{pesanan.nama_pengantin}</strong>
+          <div style={{ fontSize: '9px', fontFamily: "'Arial', sans-serif", color: '#999', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '4px' }}>
+            Checklist Pemasangan Dekorasi
           </div>
-          <div style={{ marginBottom: '8px' }}>
-            <span style={{ color: '#666', display: 'inline-block', width: '120px' }}>Tanggal</span>
-            <strong>{dateStr}</strong>
+          <div style={{ fontSize: '22px', fontWeight: 'bold', fontFamily: "'Georgia', serif", color: '#1a1a1a', letterSpacing: '0.3px' }}>
+            {pesanan.nama_pengantin || '—'}
           </div>
         </div>
-        <div>
-          <div style={{ marginBottom: '8px' }}>
-            <span style={{ color: '#666', display: 'inline-block', width: '100px' }}>Tema</span>
-            <strong>{tema}</strong>
+        <div style={{ textAlign: 'right', fontFamily: "'Arial', sans-serif", fontSize: '12px', color: '#555' }}>
+          <div style={{ marginBottom: '2px' }}>
+            <span style={{ color: '#999', marginRight: '8px' }}>Tanggal Pasang</span>
+            <strong style={{ color: '#1a1a1a' }}>{dateStr}</strong>
           </div>
-          <div style={{ marginBottom: '8px' }}>
-            <span style={{ color: '#666', display: 'inline-block', width: '100px' }}>Lokasi</span>
-            <strong>{alamat}</strong>
+          <div style={{ marginBottom: '2px' }}>
+            <span style={{ color: '#999', marginRight: '8px' }}>Status</span>
+            <strong style={{ color: '#1a1a1a' }}>{pesanan.status || 'Pending'}</strong>
           </div>
         </div>
       </div>
 
-      {/* Hero Image */}
+      {/* ===== INFO PESANAN ===== */}
       <div style={{
-        width: '100%',
-        height: '300px',
-        backgroundColor: '#f8f8f8',
-        marginBottom: '50px',
+        padding: '14px 48px',
+        backgroundColor: '#fafaf8',
+        borderBottom: '1px solid #e8e0d0',
         display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        border: '1px solid #eaeaea'
+        gap: '32px',
+        fontFamily: "'Arial', sans-serif",
+        fontSize: '12px',
       }}>
-        {heroImage ? (
-          <img 
-            src={heroImage} 
-            alt="Referensi" 
-            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-            crossOrigin="anonymous" 
-          />
-        ) : (
-          <span style={{ color: '#bbb', letterSpacing: '1px' }}>TIDAK ADA GAMBAR REFERENSI</span>
+        <div style={{ flex: 1 }}>
+          <span style={{ color: '#999', display: 'block', fontSize: '10px', letterSpacing: '0.5px', textTransform: 'uppercase', marginBottom: '2px' }}>Lokasi Pemasangan</span>
+          <span style={{ color: '#1a1a1a', fontWeight: '600', wordBreak: 'break-word', lineHeight: '1.5' }}>{pesanan.alamat || '—'}</span>
+        </div>
+        {pesanan.catatan && (
+          <div style={{ flex: 1 }}>
+            <span style={{ color: '#999', display: 'block', fontSize: '10px', letterSpacing: '0.5px', textTransform: 'uppercase', marginBottom: '2px' }}>Catatan</span>
+            <span style={{ color: '#1a1a1a', fontWeight: '600', wordBreak: 'break-word', lineHeight: '1.5' }}>{pesanan.catatan}</span>
+          </div>
+        )}
+        {pesanan.no_hp && (
+          <div>
+            <span style={{ color: '#999', display: 'block', fontSize: '10px', letterSpacing: '0.5px', textTransform: 'uppercase', marginBottom: '2px' }}>No. HP</span>
+            <span style={{ color: '#1a1a1a', fontWeight: '600' }}>{pesanan.no_hp}</span>
+          </div>
         )}
       </div>
 
-      <div style={{ 
-        fontSize: '14px', 
-        fontWeight: 'bold',
-        textTransform: 'uppercase',
-        letterSpacing: '1px',
-        marginBottom: '30px',
-        paddingBottom: '10px',
-        borderBottom: '1px solid #000',
-        display: 'flex',
-        justifyContent: 'space-between'
-      }}>
-        <span>Daftar Item & Kebutuhan Tim</span>
-        <span>( Check bila dimuat )</span>
-      </div>
-
-      {/* Items per Kategori (Tim) */}
-      {pesanan.items && pesanan.items.length > 0 ? (
-        sortedCategories.map(kategori => (
-          <div key={kategori} style={{ marginBottom: '50px', pageBreakInside: 'avoid' }}>
-            <h3 style={{
-              fontSize: '24px',
-              fontWeight: '800',
-              marginBottom: '16px',
-              color: '#000',
-              textTransform: 'uppercase',
-              letterSpacing: '1px'
-            }}>
-              {kategori}
-            </h3>
-            <table style={{
-              width: '100%',
-              borderCollapse: 'collapse',
-              fontSize: '15px'
-            }}>
-              <thead>
-                <tr style={{ borderBottom: '2px solid #000' }}>
-                  <th style={{ padding: '12px 0', width: '8%', textAlign: 'left', fontWeight: 'bold' }}>No</th>
-                  <th style={{ padding: '12px 0', width: '65%', textAlign: 'left', fontWeight: 'bold' }}>Deskripsi Barang</th>
-                  <th style={{ padding: '12px 0', width: '12%', textAlign: 'center', fontWeight: 'bold' }}>Qty</th>
-                  <th style={{ padding: '12px 0', width: '15%', textAlign: 'center', fontWeight: 'bold' }}>Check</th>
-                </tr>
-              </thead>
-              <tbody>
-                {groupedItems[kategori].map((item, idx) => (
-                  <tr key={`${kategori}-${idx}`} style={{ borderBottom: '1px solid #eaeaea' }}>
-                    <td style={{ padding: '12px 0', color: '#555' }}>{(idx + 1).toString().padStart(2, '0')}</td>
-                    <td style={{ padding: '12px 0', fontWeight: '500' }}>{item.nama}</td>
-                    <td style={{ padding: '12px 0', textAlign: 'center', fontWeight: '600' }}>{item.qty}</td>
-                    <td style={{ padding: '12px 0', textAlign: 'center' }}>
-                      <div style={{ 
-                        width: '20px', 
-                        height: '20px', 
-                        border: '1.5px solid #ccc',
-                        margin: '0 auto',
-                        borderRadius: '3px'
-                      }}></div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      {/* ===== GAMBAR REFERENSI ===== */}
+      {heroImage && (
+        <div style={{ padding: '20px 48px 0' }}>
+          <div style={{ fontSize: '9px', fontFamily: "'Arial', sans-serif", color: '#bbb', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '8px' }}>
+            Gambar Referensi
           </div>
-        ))
-      ) : (
-        <div style={{ textAlign: 'center', color: '#999', padding: '40px 0' }}>
-          Kosong.
+          <img
+            src={heroImage}
+            alt="Referensi Dekorasi"
+            style={{ width: '100%', maxHeight: '240px', objectFit: 'contain', display: 'block', border: '1px solid #f0ece4' }}
+            crossOrigin="anonymous"
+          />
         </div>
       )}
+
+      {/* ===== TABEL ITEM PER TIM ===== */}
+      <div style={{ padding: '24px 48px 40px' }}>
+        {pesanan.items && pesanan.items.length > 0 ? (
+          sortedCategories.map((kategori, catIdx) => (
+            <div key={kategori} style={{ marginBottom: catIdx < sortedCategories.length - 1 ? '28px' : '0' }}>
+              {/* Header Tim */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                marginBottom: '0',
+              }}>
+                <div style={{
+                  backgroundColor: kategori === 'Spesifikasi Utama' ? '#f5f0e8' : '#1a1a1a',
+                  color: kategori === 'Spesifikasi Utama' ? '#8a6d2c' : '#ffffff',
+                  padding: '6px 16px',
+                  fontSize: '11px',
+                  fontFamily: "'Arial', sans-serif",
+                  fontWeight: 'bold',
+                  letterSpacing: '1px',
+                  textTransform: 'uppercase',
+                }}>
+                  {kategori}
+                </div>
+                <div style={{ flex: 1, height: '1px', backgroundColor: '#e0d9cc', marginLeft: '0' }} />
+              </div>
+
+              {/* Tabel */}
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: "'Arial', sans-serif" }}>
+                <thead>
+                  <tr style={{ borderBottom: '1.5px solid #1a1a1a' }}>
+                    <th style={{ padding: '8px 6px 8px 0', width: '36px', textAlign: 'left', fontSize: '10px', fontWeight: '700', color: '#555', letterSpacing: '0.5px' }}>No</th>
+                    <th style={{ padding: '8px 6px', textAlign: 'left', fontSize: '10px', fontWeight: '700', color: '#555', letterSpacing: '0.5px' }}>Nama Barang</th>
+                    <th style={{ padding: '8px 6px', width: '48px', textAlign: 'center', fontSize: '10px', fontWeight: '700', color: '#555', letterSpacing: '0.5px' }}>Qty</th>
+                    <th style={{ padding: '8px 0 8px 6px', width: '56px', textAlign: 'center', fontSize: '10px', fontWeight: '700', color: '#555', letterSpacing: '0.5px' }}>✓</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {groupedItems[kategori].map((item, idx) => (
+                    <tr
+                      key={idx}
+                      style={{
+                        borderBottom: '1px solid #f0ece4',
+                        backgroundColor: idx % 2 === 0 ? '#fff' : '#fafaf8',
+                      }}
+                    >
+                      <td style={{ padding: '9px 6px 9px 0', fontSize: '11px', color: '#aaa', fontVariantNumeric: 'tabular-nums' }}>
+                        {String(idx + 1).padStart(2, '0')}
+                      </td>
+                      <td style={{ padding: '9px 6px', fontSize: '13px', color: '#1a1a1a', lineHeight: '1.4', wordBreak: 'break-word' }}>
+                        {item.nama}
+                      </td>
+                      <td style={{ padding: '9px 6px', textAlign: 'center', fontSize: '13px', fontWeight: '700', color: '#1a1a1a' }}>
+                        {item.qty}
+                      </td>
+                      <td style={{ padding: '9px 0 9px 6px', textAlign: 'center' }}>
+                        <div style={{
+                          width: '18px',
+                          height: '18px',
+                          border: '1.5px solid #c9a84c',
+                          margin: '0 auto',
+                          borderRadius: '2px',
+                        }} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ))
+        ) : (
+          <div style={{ textAlign: 'center', color: '#bbb', padding: '40px 0', fontSize: '13px', fontFamily: "'Arial', sans-serif" }}>
+            Tidak ada item.
+          </div>
+        )}
+      </div>
+
+      {/* ===== FOOTER ===== */}
+      <div style={{
+        padding: '16px 48px',
+        borderTop: '1px solid #e8e0d0',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        fontFamily: "'Arial', sans-serif",
+        fontSize: '10px',
+        color: '#bbb',
+      }}>
+        <span>Luwes Decoration &mdash; Dokumen Internal</span>
+        <span>Dicetak: {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+      </div>
     </div>
   );
 });
 
 PesananExportTemplate.displayName = 'PesananExportTemplate';
 export default PesananExportTemplate;
+
