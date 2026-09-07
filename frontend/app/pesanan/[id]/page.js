@@ -65,9 +65,35 @@ export default function PesananDetailPage() {
 
   async function loadData() {
     try {
-      const res = await api(`/api/pesanan/${params.id}`);
-      setPesanan(res.data);
-      setForm(res.data);
+      // Load pesanan dan katalog item secara bersamaan
+      const [resPesanan, resItems] = await Promise.all([
+        api(`/api/pesanan/${params.id}`),
+        api('/api/items'),
+      ]);
+
+      const katalog = resItems.data || [];
+      const katalogMap = {};
+      katalog.forEach(k => { katalogMap[k.id] = k; });
+
+      // Enrich items pesanan dengan kategori terbaru dari katalog
+      const pesananData = resPesanan.data;
+      if (pesananData.items) {
+        pesananData.items = pesananData.items.map(item => {
+          // item spesifikasi utama tidak perlu dicari di katalog
+          if (item.id === 'model-dekorasi' || item.id === 'tema-warna') {
+            return { ...item, kategori: 'Spesifikasi Utama' };
+          }
+          // ambil kategori terbaru dari katalog jika item tidak punya kategori
+          const fromKatalog = katalogMap[item.id];
+          if (fromKatalog && fromKatalog.kategori) {
+            return { ...item, kategori: fromKatalog.kategori };
+          }
+          return item;
+        });
+      }
+
+      setPesanan(pesananData);
+      setForm(pesananData);
     } catch (err) {
       console.error(err);
     } finally {
