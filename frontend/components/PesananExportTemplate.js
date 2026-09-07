@@ -382,7 +382,7 @@ const PesananExportTemplate = forwardRef(({ pesanan, katalogItems }, ref) => {
                     {/* QR Code Block (Halaman Akhir - Public Link) */}
                     <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
                       <img
-                        src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(typeof window !== 'undefined' ? `${window.location.origin}/cek/${pesanan.id}` : '')}&margin=0`}
+                        src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`https://luwes-iota.vercel.app/cek/${pesanan.id}`)}&margin=0`}
                         alt="QR Code Cek Digital"
                         style={{ width: '56px', height: '56px' }}
                         crossOrigin="anonymous"
