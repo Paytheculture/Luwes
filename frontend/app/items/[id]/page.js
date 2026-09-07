@@ -112,21 +112,18 @@ export default function EditItemPage() {
 
               <div className="form-group">
                 <label htmlFor="kategori">Tim / Kategori</label>
-                <input
+                <select
                   id="kategori"
-                  type="text"
-                  list="tim-kategori"
                   value={form.kategori}
                   onChange={(e) => setForm({ ...form, kategori: e.target.value })}
-                  placeholder="Contoh: Tim Tenda"
                   required
-                />
-                <datalist id="tim-kategori">
-                  <option value="Tim Pelaminan" />
-                  <option value="Tim Tenda" />
-                  <option value="Tim Bunga" />
-                  <option value="Tim Properti" />
-                </datalist>
+                >
+                  <option value="" disabled>Pilih Tim / Kategori</option>
+                  <option value="Tim Pelaminan">Tim Pelaminan</option>
+                  <option value="Tim Tenda">Tim Tenda</option>
+                  <option value="Tim Bunga">Tim Bunga</option>
+                  <option value="Tim Properti">Tim Properti</option>
+                </select>
               </div>
 
             <div className="form-group">
