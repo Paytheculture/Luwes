@@ -27,6 +27,45 @@ export default function TambahPesananPage() {
   });
 
   const [selectedItems, setSelectedItems] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('Semua');
+  const [itemSearch, setItemSearch] = useState('');
+
+  const CATEGORY_ICONS = {
+    Lampu: '💡',
+    Kursi: '🪑',
+    Panggung: '🎪',
+    Bunga: '🌸',
+    Meja: '🪵',
+    Tenda: '⛺',
+    Karpet: '🧶',
+    Kipas: '🌀',
+    Sound: '🔊',
+    Lainnya: '📦',
+  };
+
+  function getItemCategory(item) {
+    if (item.kategori && item.kategori.trim()) {
+      return item.kategori.trim();
+    }
+    const name = (item.nama || '').trim();
+    if (!name) return 'Lainnya';
+    const firstWord = name.split(/\s+/)[0];
+    if (!firstWord) return 'Lainnya';
+    return firstWord.charAt(0).toUpperCase() + firstWord.slice(1).toLowerCase();
+  }
+
+  function getCategoryIcon(cat) {
+    return CATEGORY_ICONS[cat] || '✨';
+  }
+
+  const groupedItems = items.reduce((acc, item) => {
+    const cat = getItemCategory(item);
+    if (!acc[cat]) acc[cat] = [];
+    acc[cat].push(item);
+    return acc;
+  }, {});
+
+  const categoryList = Object.keys(groupedItems).sort();
 
   useEffect(() => {
     if (!isLoggedIn()) { router.push('/login'); return; }
@@ -281,11 +320,101 @@ export default function TambahPesananPage() {
             </div>
           </div>
 
-          <div className="card" style={{ marginBottom: 'var(--sp-6)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--sp-5)' }}>
-              <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 600 }}>
-                Pilih item pendukung
-              </h3>
+"          <div className="card" style={{ marginBottom: 'var(--sp-6)' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)', marginBottom: 'var(--sp-5)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 'var(--sp-3)' }}>
+                <div>
+                  <h3 style={{ fontSize: 'var(--text-base)', fontWeight: 600, margin: 0 }}>
+                    Pilih item pendukung
+                  </h3>
+                  <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)', margin: '4px 0 0 0' }}>
+                    Terbagi rapi per kategori agar mudah dipilih tanpa bingung
+                  </p>
+                </div>
+
+                {/* Search Bar */}
+                <div style={{ position: 'relative', width: '220px', maxWidth: '100%' }}>
+                  <input
+                    type="text"
+                    placeholder="Cari item..."
+                    value={itemSearch}
+                    onChange={(e) => setItemSearch(e.target.value)}
+                    style={{
+                      width: '100%',
+                      paddingLeft: '32px',
+                      paddingRight: itemSearch ? '28px' : '12px',
+                      fontSize: 'var(--text-xs)',
+                      height: '36px',
+                      borderRadius: 'var(--radius-md)'
+                    }}
+                  />
+                  <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', fontSize: '13px', pointerEvents: 'none' }}>
+                    🔍
+                  </span>
+                  {itemSearch && (
+                    <button
+                      type="button"
+                      onClick={() => setItemSearch('')}
+                      style={{
+                        position: 'absolute',
+                        right: '8px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        background: 'none',
+                        border: 'none',
+                        color: 'var(--text-muted)',
+                        cursor: 'pointer',
+                        fontSize: '12px',
+                        padding: '2px'
+                      }}
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Category Filter Pills */}
+              {categoryList.length > 0 && (
+                <div className="category-tabs-container">
+                  <button
+                    type="button"
+                    className={`category-tab-btn ${selectedCategory === 'Semua' ? 'active' : ''}`}
+                    onClick={() => setSelectedCategory('Semua')}
+                  >
+                    <span>Semua</span>
+                    <span className="category-tab-badge">{items.length}</span>
+                  </button>
+
+                  {categoryList.map((cat) => {
+                    const totalCount = groupedItems[cat].length;
+                    const selectedInCat = groupedItems[cat].filter(i => selectedItems.some(s => s.id === i.id)).length;
+                    return (
+                      <button
+                        key={cat}
+                        type="button"
+                        className={`category-tab-btn ${selectedCategory === cat ? 'active' : ''}`}
+                        onClick={() => setSelectedCategory(cat)}
+                      >
+                        <span>{getCategoryIcon(cat)} {cat}</span>
+                        <span className="category-tab-badge">{totalCount}</span>
+                        {selectedInCat > 0 && (
+                          <span 
+                            style={{
+                              width: '6px',
+                              height: '6px',
+                              borderRadius: '50%',
+                              background: selectedCategory === cat ? '#ffffff' : 'var(--primary-color)',
+                              display: 'inline-block'
+                            }} 
+                            title={`${selectedInCat} item dipilih`}
+                          />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             {loading ? (
@@ -295,83 +424,116 @@ export default function TambahPesananPage() {
                 Belum ada item di katalog. <Link href="/items">Tambah item dulu.</Link>
               </div>
             ) : (
-              <div className="item-grid">
-                {items.map((item) => {
-                  const selectedItem = selectedItems.find((s) => s.id === item.id);
-                  const isSelected = !!selectedItem;
-                  return (
-                    <div
-                      key={item.id}
-                      className={`item-card ${isSelected ? 'selected' : ''}`}
-                      style={{ display: 'flex', flexDirection: 'column' }}
-                    >
-                      <div className="item-card-img" onClick={() => !isSelected && handleAdd(item)} style={{ cursor: isSelected ? 'default' : 'pointer' }}>
-                        {item.gambar_url ? (
-                          <img src={item.gambar_url} alt={item.nama} />
-                        ) : (
-                          <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: 'var(--text-xs)' }}>
-                            Belum ada foto
+              <div>
+                {categoryList
+                  .filter((cat) => selectedCategory === 'Semua' || selectedCategory === cat)
+                  .map((cat) => {
+                    const categoryItems = groupedItems[cat].filter((item) =>
+                      !itemSearch || item.nama.toLowerCase().includes(itemSearch.toLowerCase())
+                    );
+
+                    if (categoryItems.length === 0) return null;
+
+                    const selectedInCat = categoryItems.filter(i => selectedItems.some(s => s.id === i.id)).length;
+
+                    return (
+                      <div key={cat} className="category-section">
+                        <div className="category-header">
+                          <div className="category-header-title">
+                            <span style={{ fontSize: '18px' }}>{getCategoryIcon(cat)}</span>
+                            <span>{cat}</span>
+                            <span className="category-header-meta">
+                              ({categoryItems.length} item)
+                            </span>
                           </div>
-                        )}
+                          {selectedInCat > 0 && (
+                            <span className="badge badge-lunas" style={{ fontSize: '11px', padding: '2px 8px' }}>
+                              {selectedInCat} dipilih
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="item-grid">
+                          {categoryItems.map((item) => {
+                            const selectedItem = selectedItems.find((s) => s.id === item.id);
+                            const isSelected = !!selectedItem;
+                            return (
+                              <div
+                                key={item.id}
+                                className={`item-card ${isSelected ? 'selected' : ''}`}
+                                style={{ display: 'flex', flexDirection: 'column' }}
+                              >
+                                <div className="item-card-img" onClick={() => !isSelected && handleAdd(item)} style={{ cursor: isSelected ? 'default' : 'pointer' }}>
+                                  {item.gambar_url ? (
+                                    <img src={item.gambar_url} alt={item.nama} />
+                                  ) : (
+                                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: 'var(--text-xs)' }}>
+                                      Belum ada foto
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="item-card-body" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                                  <h4 style={{ marginBottom: 'var(--sp-3)' }}>{item.nama}</h4>
+                                  
+                                  {isSelected ? (
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}>
+                                      <div style={{ position: 'relative', flex: 1 }}>
+                                        <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', fontSize: '12px', fontWeight: '500', pointerEvents: 'none' }}>Qty:</span>
+                                        <input 
+                                          type="number" 
+                                          min="0"
+                                          value={selectedItem.qty} 
+                                          onChange={(e) => handleQtyChange(item.id, e.target.value)}
+                                          onBlur={() => handleQtyBlur(item.id)}
+                                          style={{ 
+                                            width: '100%', 
+                                            textAlign: 'right', 
+                                            fontWeight: '600', 
+                                            border: '2px solid var(--primary-color)', 
+                                            borderRadius: 'var(--radius-md)', 
+                                            padding: '6px 10px 6px 36px', 
+                                            outline: 'none', 
+                                            background: 'rgba(var(--primary-color-rgb), 0.05)',
+                                            color: 'var(--primary-color)',
+                                            fontSize: '14px'
+                                          }}
+                                        />
+                                      </div>
+                                      <button 
+                                        type="button" 
+                                        onClick={() => removeItem(item.id)} 
+                                        style={{ 
+                                          background: 'none', 
+                                          border: 'none', 
+                                          color: 'var(--danger-color)', 
+                                          cursor: 'pointer', 
+                                          padding: '6px',
+                                          display: 'flex',
+                                          alignItems: 'center',
+                                          justifyContent: 'center',
+                                          borderRadius: 'var(--radius-sm)',
+                                          transition: 'background 0.2s'
+                                        }} 
+                                        onMouseOver={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'}
+                                        onMouseOut={(e) => e.currentTarget.style.background = 'none'}
+                                        title="Batal pilih"
+                                      >
+                                        ✕
+                                      </button>
+                                    </div>
+                                  ) : (
+                                    <button type="button" className="btn btn-secondary" style={{ width: '100%', padding: 'var(--sp-2)' }} onClick={() => handleAdd(item)}>
+                                      Pilih Item
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
                       </div>
-                      <div className="item-card-body" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                        <h4 style={{ marginBottom: 'var(--sp-3)' }}>{item.nama}</h4>
-                        
-                        {isSelected ? (
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', padding: '0 var(--sp-2)' }}>
-                            <div style={{ position: 'relative', flex: 1 }}>
-                              <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', fontSize: '13px', fontWeight: '500', pointerEvents: 'none' }}>Qty:</span>
-                              <input 
-                                type="number" 
-                                min="0"
-                                value={selectedItem.qty} 
-                                onChange={(e) => handleQtyChange(item.id, e.target.value)}
-                                onBlur={() => handleQtyBlur(item.id)}
-                                style={{ 
-                                  width: '100%', 
-                                  textAlign: 'right', 
-                                  fontWeight: '600', 
-                                  border: '2px solid var(--primary-color)', 
-                                  borderRadius: 'var(--radius-md)', 
-                                  padding: '8px 12px 8px 40px', 
-                                  outline: 'none', 
-                                  background: 'rgba(var(--primary-color-rgb), 0.05)',
-                                  color: 'var(--primary-color)',
-                                  fontSize: '15px'
-                                }}
-                              />
-                            </div>
-                            <button 
-                              type="button" 
-                              onClick={() => removeItem(item.id)} 
-                              style={{ 
-                                background: 'none', 
-                                border: 'none', 
-                                color: 'var(--danger-color)', 
-                                cursor: 'pointer', 
-                                padding: '8px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                borderRadius: 'var(--radius-sm)',
-                                transition: 'background 0.2s'
-                              }} 
-                              onMouseOver={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'}
-                              onMouseOut={(e) => e.currentTarget.style.background = 'none'}
-                              title="Batal pilih"
-                            >
-                              ✕
-                            </button>
-                          </div>
-                        ) : (
-                          <button type="button" className="btn btn-secondary" style={{ width: '100%', padding: 'var(--sp-2)' }} onClick={() => handleAdd(item)}>
-                            Pilih Item
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
               </div>
             )}
           </div>
