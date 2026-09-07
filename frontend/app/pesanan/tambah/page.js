@@ -51,11 +51,9 @@ export default function TambahPesananPage() {
     setLoading(false);
   }
 
-  function toggleItem(item) {
-    const exists = selectedItems.find((s) => s.nama === item.nama);
-    if (exists) {
-      setSelectedItems(selectedItems.filter((s) => s.nama !== item.nama));
-    } else {
+  function handleAdd(item) {
+    const exists = selectedItems.find((s) => s.id === item.id);
+    if (!exists) {
       setSelectedItems([...selectedItems, {
         id: item.id,
         nama: item.nama,
@@ -66,13 +64,16 @@ export default function TambahPesananPage() {
   }
 
   function updateQty(id, delta) {
-    setSelectedItems(selectedItems.map((s) => {
-      if (s.id === id) {
-        const newQty = Math.max(1, s.qty + delta);
-        return { ...s, qty: newQty };
+    setSelectedItems(prev => {
+      const existing = prev.find(s => s.id === id);
+      if (!existing) return prev;
+      
+      const newQty = existing.qty + delta;
+      if (newQty <= 0) {
+        return prev.filter(s => s.id !== id);
       }
-      return s;
-    }));
+      return prev.map(s => s.id === id ? { ...s, qty: newQty } : s);
+    });
   }
 
   function removeItem(id) {
@@ -270,14 +271,15 @@ export default function TambahPesananPage() {
             ) : (
               <div className="item-grid">
                 {items.map((item) => {
-                  const isSelected = selectedItems.some((s) => s.id === item.id);
+                  const selectedItem = selectedItems.find((s) => s.id === item.id);
+                  const isSelected = !!selectedItem;
                   return (
                     <div
                       key={item.id}
                       className={`item-card ${isSelected ? 'selected' : ''}`}
-                      onClick={() => toggleItem(item)}
+                      style={{ display: 'flex', flexDirection: 'column' }}
                     >
-                      <div className="item-card-img">
+                      <div className="item-card-img" onClick={() => !isSelected && handleAdd(item)} style={{ cursor: isSelected ? 'default' : 'pointer' }}>
                         {item.gambar_url ? (
                           <img src={item.gambar_url} alt={item.nama} />
                         ) : (
@@ -286,8 +288,20 @@ export default function TambahPesananPage() {
                           </div>
                         )}
                       </div>
-                      <div className="item-card-body">
-                        <h4>{item.nama}</h4>
+                      <div className="item-card-body" style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <h4 style={{ marginBottom: 'var(--sp-3)' }}>{item.nama}</h4>
+                        
+                        {isSelected ? (
+                          <div className="qty-control" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'var(--sp-3)', background: 'var(--bg-elevated)', padding: 'var(--sp-2)', borderRadius: 'var(--radius-md)' }}>
+                            <button type="button" onClick={() => updateQty(item.id, -1)} style={{ width: '28px', height: '28px', borderRadius: '50%', border: '1px solid var(--border-color)', background: '#fff', cursor: 'pointer' }}>−</button>
+                            <span style={{ fontWeight: 'bold', minWidth: '20px', textAlign: 'center' }}>{selectedItem.qty}</span>
+                            <button type="button" onClick={() => updateQty(item.id, 1)} style={{ width: '28px', height: '28px', borderRadius: '50%', border: '1px solid var(--border-color)', background: '#fff', cursor: 'pointer' }}>+</button>
+                          </div>
+                        ) : (
+                          <button type="button" className="btn btn-secondary" style={{ width: '100%', padding: 'var(--sp-2)' }} onClick={() => handleAdd(item)}>
+                            Pilih Item
+                          </button>
+                        )}
                       </div>
                     </div>
                   );
