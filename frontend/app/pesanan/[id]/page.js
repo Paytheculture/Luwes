@@ -1,11 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import Sidebar from '@/components/Sidebar';
 import Modal from '@/components/Modal';
 import { api, isLoggedIn, formatRupiah, formatDate } from '@/lib/api';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import PesananExportTemplate from '@/components/PesananExportTemplate';
 
 export default function PesananDetailPage() {
   const router = useRouter();
@@ -17,6 +20,43 @@ export default function PesananDetailPage() {
   const [saving, setSaving] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [form, setForm] = useState({});
+  const [exporting, setExporting] = useState(false);
+  const exportRef = useRef(null);
+
+  async function handleExport(type) {
+    if (!exportRef.current) return;
+    setExporting(true);
+    try {
+      const canvas = await html2canvas(exportRef.current, { 
+        scale: 2, 
+        useCORS: true,
+        logging: false 
+      });
+      
+      const imgData = canvas.toDataURL('image/jpeg', 1.0);
+      const filename = `Checklist_${pesanan.nama_pengantin.replace(/\s+/g, '_')}`;
+      
+      if (type === 'jpg') {
+        const link = document.createElement('a');
+        link.download = `${filename}.jpg`;
+        link.href = imgData;
+        link.click();
+      } else if (type === 'pdf') {
+        const pdf = new jsPDF({
+          orientation: 'portrait',
+          unit: 'px',
+          format: [canvas.width / 2, canvas.height / 2]
+        });
+        pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width / 2, canvas.height / 2);
+        pdf.save(`${filename}.pdf`);
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Gagal mengekspor dokumen: ' + err.message);
+    } finally {
+      setExporting(false);
+    }
+  }
 
   useEffect(() => {
     if (!isLoggedIn()) { router.push('/login'); return; }
@@ -112,6 +152,12 @@ export default function PesananDetailPage() {
               </>
             ) : (
               <>
+                <button className="btn btn-secondary" onClick={() => handleExport('jpg')} disabled={exporting}>
+                  {exporting ? '...' : 'JPG'}
+                </button>
+                <button className="btn btn-secondary" onClick={() => handleExport('pdf')} disabled={exporting}>
+                  {exporting ? '...' : 'PDF'}
+                </button>
                 <button className="btn btn-secondary" onClick={() => setEditing(true)}>Edit</button>
                 <button className="btn btn-danger" onClick={() => setShowDelete(true)}>Hapus</button>
               </>
@@ -236,6 +282,9 @@ export default function PesananDetailPage() {
           onCancel={() => setShowDelete(false)}
         />
       )}
+
+      {/* Hidden Export Template */}
+      <PesananExportTemplate pesanan={pesanan} ref={exportRef} />
     </div>
   );
 }
