@@ -1,4 +1,4 @@
-const rawApiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+const rawApiUrl = process.env.NEXT_PUBLIC_API_URL || '';
 const API_URL = rawApiUrl.replace(/\/+$/, '');
 
 function getToken() {
