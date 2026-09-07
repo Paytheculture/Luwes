@@ -92,8 +92,9 @@ func (s *SheetsService) GetPesananByID(id string) (*models.Pesanan, int, error) 
 		return nil, 0, err
 	}
 
+	targetID := strings.ToLower(strings.TrimSpace(id))
 	for i, p := range pesananList {
-		if p.ID == id {
+		if strings.ToLower(strings.TrimSpace(p.ID)) == targetID {
 			return &p, i + 2, nil // +2 because row 1 is header, rows are 1-indexed
 		}
 	}

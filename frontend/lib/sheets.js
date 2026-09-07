@@ -83,7 +83,8 @@ export async function getPesananById(id) {
     range: 'Pesanan!A2:K',
   });
   const rawRows = res.data.values || [];
-  const idx = rawRows.findIndex((row) => row && safeString(row, 0).trim() === id);
+  const targetId = decodeURIComponent(String(id || '')).trim().toLowerCase();
+  const idx = rawRows.findIndex((row) => row && safeString(row, 0).trim().toLowerCase() === targetId);
   if (idx === -1) return null;
 
   const row = rawRows[idx];
