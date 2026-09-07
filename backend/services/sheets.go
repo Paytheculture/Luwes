@@ -205,7 +205,7 @@ func (s *SheetsService) DeletePesanan(id string) error {
 // ============ ITEMS ============
 
 func (s *SheetsService) GetAllItems() ([]models.Item, error) {
-	resp, err := s.srv.Spreadsheets.Values.Get(s.spreadsheetID, "Items!A2:E").Do()
+	resp, err := s.srv.Spreadsheets.Values.Get(s.spreadsheetID, "Items!A2:F").Do()
 	if err != nil {
 		return nil, err
 	}
@@ -218,6 +218,10 @@ func (s *SheetsService) GetAllItems() ([]models.Item, error) {
 			Harga:     safeInt64(row, 2),
 			GambarURL: safeString(row, 3),
 			Deskripsi: safeString(row, 4),
+			Kategori:  safeString(row, 5),
+		}
+		if item.ID == "" {
+			continue
 		}
 		items = append(items, item)
 	}
@@ -247,6 +251,7 @@ func (s *SheetsService) CreateItem(item models.Item) error {
 		item.Harga,
 		item.GambarURL,
 		item.Deskripsi,
+		item.Kategori,
 	}
 
 	vr := &sheets.ValueRange{
@@ -254,8 +259,8 @@ func (s *SheetsService) CreateItem(item models.Item) error {
 	}
 
 	_, err := s.srv.Spreadsheets.Values.Append(
-		s.spreadsheetID, "Items!A:E", vr,
-	).ValueInputOption("RAW").Do()
+		s.spreadsheetID, "Items!A:F", vr,
+	).ValueInputOption("RAW").InsertDataOption("INSERT_ROWS").Do()
 
 	return err
 }
@@ -272,13 +277,14 @@ func (s *SheetsService) UpdateItem(id string, item models.Item) error {
 		item.Harga,
 		item.GambarURL,
 		item.Deskripsi,
+		item.Kategori,
 	}
 
 	vr := &sheets.ValueRange{
 		Values: [][]interface{}{values},
 	}
 
-	rangeStr := fmt.Sprintf("Items!A%d:E%d", rowNum, rowNum)
+	rangeStr := fmt.Sprintf("Items!A%d:F%d", rowNum, rowNum)
 	_, err = s.srv.Spreadsheets.Values.Update(
 		s.spreadsheetID, rangeStr, vr,
 	).ValueInputOption("RAW").Do()

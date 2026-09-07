@@ -21,10 +21,12 @@ type LoginResponse struct {
 }
 
 type OrderItem struct {
-	Nama   string `json:"nama"`
-	Qty    int    `json:"qty"`
-	Harga  int64  `json:"harga"`
-	Gambar string `json:"gambar,omitempty"`
+	ID       string `json:"id,omitempty"`
+	Nama     string `json:"nama"`
+	Qty      int    `json:"qty"`
+	Harga    int64  `json:"harga"`
+	Gambar   string `json:"gambar,omitempty"`
+	Kategori string `json:"kategori,omitempty"`
 }
 
 type Pesanan struct {
@@ -47,6 +49,7 @@ type Item struct {
 	Harga     int64  `json:"harga"`
 	GambarURL string `json:"gambar_url,omitempty"`
 	Deskripsi string `json:"deskripsi,omitempty"`
+	Kategori  string `json:"kategori,omitempty"`
 }
 
 type ModelDekor struct {
