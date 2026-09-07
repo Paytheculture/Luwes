@@ -95,12 +95,25 @@ const PesananExportTemplate = forwardRef(({ pesanan, katalogItems }, ref) => {
           style={{ height: '70px', width: 'auto', objectFit: 'contain' }}
           crossOrigin="anonymous"
         />
-        <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: '24px', fontWeight: 'bold', letterSpacing: '-0.5px' }}>
-            MANIFEST OPERASIONAL
+        <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+          <div style={{ fontSize: '12px', fontWeight: 'bold', maxWidth: '250px', lineHeight: '1.4', marginBottom: '12px' }}>
+            Kepuhrejo, Kaliboto, Kec. Tarokan, Kabupaten Kediri, Jawa Timur 64152
           </div>
-          <div style={{ fontSize: '14px', color: '#555555', marginTop: '4px' }}>
-            ID: {pesanan.id || 'N/A'}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontSize: '10px', color: '#555555', fontWeight: 'bold', letterSpacing: '0.5px' }}>
+                ID PESANAN
+              </div>
+              <div style={{ fontSize: '13px', fontWeight: 'bold' }}>
+                {pesanan.id || 'N/A'}
+              </div>
+            </div>
+            <img
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}&margin=0`}
+              alt="QR Code"
+              style={{ width: '50px', height: '50px' }}
+              crossOrigin="anonymous"
+            />
           </div>
         </div>
       </div>
