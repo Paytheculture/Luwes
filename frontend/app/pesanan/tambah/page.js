@@ -297,9 +297,30 @@ export default function TambahPesananPage() {
                 type="text"
                 value={form.tema_warna}
                 onChange={(e) => setForm({ ...form, tema_warna: e.target.value })}
-                placeholder="Contoh: Putih & Peach, Mawar Merah"
+                placeholder="Ketik sendiri atau pilih dari template..."
                 required
               />
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: 'var(--sp-2)' }}>
+                {['Putih & Peach', 'Putih & Gold', 'Mawar Merah', 'Pastel Pink', 'Rustic Natural', 'Maroon & Rose Gold', 'Emerald & Gold'].map((tpl) => (
+                  <button
+                    key={tpl}
+                    type="button"
+                    onClick={() => setForm({ ...form, tema_warna: tpl })}
+                    style={{
+                      padding: '4px 10px',
+                      fontSize: 'var(--text-xs)',
+                      borderRadius: 'var(--radius-sm)',
+                      border: '1px solid var(--border)',
+                      background: form.tema_warna === tpl ? 'var(--primary-color)' : 'var(--bg-base)',
+                      color: form.tema_warna === tpl ? '#fff' : 'var(--text-secondary)',
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease'
+                    }}
+                  >
+                    + {tpl}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
