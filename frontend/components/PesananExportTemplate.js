@@ -59,15 +59,33 @@ const PesananExportTemplate = forwardRef(({ pesanan }, ref) => {
         justifyContent: 'space-between',
         borderBottom: '4px solid #111',
         paddingBottom: '20px',
-        marginBottom: '30px'
+        marginBottom: '25px'
       }}>
-        <div>
-          <h1 style={{ margin: 0, fontSize: '36px', fontWeight: '800', letterSpacing: '1px', textTransform: 'uppercase', color: '#111' }}>
-            Luwes Dekorasi
-          </h1>
-          <p style={{ margin: '5px 0 0 0', fontSize: '16px', color: '#555', letterSpacing: '0.5px' }}>
-            Wedding & Event Decoration Services
-          </p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          {/* Logo Placeholder */}
+          <div style={{
+            width: '70px',
+            height: '70px',
+            backgroundColor: '#111',
+            borderRadius: '12px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            color: '#fff',
+            fontSize: '32px',
+            fontWeight: '900',
+            fontFamily: 'serif'
+          }}>
+            L
+          </div>
+          <div>
+            <h1 style={{ margin: 0, fontSize: '32px', fontWeight: '900', letterSpacing: '1px', textTransform: 'uppercase', color: '#111' }}>
+              Luwes Dekorasi
+            </h1>
+            <p style={{ margin: '5px 0 0 0', fontSize: '14px', color: '#444', lineHeight: '1.4', maxWidth: '400px' }}>
+              Dsn. Kepuhrejo, Kaliboto, Kec. Tarokan<br/>Kabupaten Kediri, Jawa Timur 64152
+            </p>
+          </div>
         </div>
         <div style={{
           backgroundColor: '#111',
@@ -76,9 +94,10 @@ const PesananExportTemplate = forwardRef(({ pesanan }, ref) => {
           borderRadius: '8px',
           fontWeight: 'bold',
           fontSize: '20px',
-          letterSpacing: '1px'
+          letterSpacing: '2px',
+          textAlign: 'center'
         }}>
-          FORM CHECKLIST
+          CHECKLIST
         </div>
       </div>
 
@@ -108,31 +127,59 @@ const PesananExportTemplate = forwardRef(({ pesanan }, ref) => {
         )}
       </div>
 
-      {/* Date & Location */}
-      <div style={{ fontSize: '18px', fontWeight: '500', marginBottom: '20px' }}>
-        {dateStr} ( {alamat} )
-      </div>
-
-      {/* Details List */}
-      <ul style={{ 
-        listStyleType: 'disc', 
-        paddingLeft: '30px', 
-        fontSize: '16px', 
-        marginBottom: '30px',
-        lineHeight: '1.6' 
+      {/* Info Grid */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        backgroundColor: '#f9f9f9',
+        border: '2px solid #eaeaea',
+        borderRadius: '12px',
+        padding: '20px 25px',
+        marginBottom: '30px'
       }}>
-        <li><strong>Tema :</strong> {tema}</li>
-        <li><strong>Nama :</strong> {pesanan.nama_pengantin}</li>
-      </ul>
+        <div style={{ flex: 1, paddingRight: '20px' }}>
+          <table style={{ fontSize: '15px', lineHeight: '1.8', width: '100%' }}>
+            <tbody>
+              <tr>
+                <td style={{ width: '130px', color: '#666' }}>Nama Pengantin</td>
+                <td style={{ fontWeight: 'bold', color: '#111' }}>: {pesanan.nama_pengantin}</td>
+              </tr>
+              <tr>
+                <td style={{ color: '#666' }}>Tanggal Pasang</td>
+                <td style={{ fontWeight: 'bold', color: '#111' }}>: {dateStr}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style={{ flex: 1, paddingLeft: '20px', borderLeft: '2px dashed #ddd' }}>
+          <table style={{ fontSize: '15px', lineHeight: '1.8', width: '100%' }}>
+            <tbody>
+              <tr>
+                <td style={{ width: '120px', color: '#666' }}>Tema Dekorasi</td>
+                <td style={{ fontWeight: 'bold', color: '#111' }}>: {tema || '-'}</td>
+              </tr>
+              <tr>
+                <td style={{ color: '#666', verticalAlign: 'top' }}>Alamat Lokasi</td>
+                <td style={{ fontWeight: 'bold', color: '#111', verticalAlign: 'top' }}>: {alamat}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       {/* Note Header */}
       <div style={{ 
         textAlign: 'center', 
         fontSize: '18px', 
         fontWeight: 'bold', 
-        marginBottom: '15px' 
+        marginBottom: '20px',
+        color: '#d32f2f',
+        backgroundColor: '#ffebee',
+        padding: '10px',
+        borderRadius: '8px',
+        border: '1px solid #ffcdd2'
       }}>
-        Catatan : Centang (V) Bila Sudah !
+        Catatan : Beri centang (✓) pada kolom checklist bila item sudah dimuat!
       </div>
 
       {/* Items per Kategori */}
@@ -187,15 +234,19 @@ const PesananExportTemplate = forwardRef(({ pesanan }, ref) => {
 });
 
 const tableHeaderStyle = {
-  border: '1px solid #000',
-  padding: '10px 15px',
+  border: '2px solid #222',
+  padding: '12px 15px',
   fontWeight: 'bold',
   textAlign: 'center',
-  backgroundColor: '#f9f9f9'
+  backgroundColor: '#f0f0f0',
+  color: '#111',
+  textTransform: 'uppercase',
+  fontSize: '14px',
+  letterSpacing: '0.5px'
 };
 
 const tableCellStyle = {
-  border: '1px solid #000',
+  border: '1px solid #444',
   padding: '12px 15px',
 };
 
