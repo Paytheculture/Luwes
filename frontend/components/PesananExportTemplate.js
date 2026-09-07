@@ -19,6 +19,24 @@ const PesananExportTemplate = forwardRef(({ pesanan }, ref) => {
 
   const alamat = pesanan.alamat || 'ALAMAT BELUM DITENTUKAN';
 
+  const groupedItems = (pesanan.items || []).reduce((acc, item) => {
+    const cat = item.id === 'model-dekorasi' || item.id === 'tema-warna' 
+      ? 'Spesifikasi Utama' 
+      : (item.kategori || 'Lainnya');
+    
+    if (!acc[cat]) acc[cat] = [];
+    acc[cat].push(item);
+    return acc;
+  }, {});
+
+  const sortedCategories = Object.keys(groupedItems).sort((a, b) => {
+    if (a === 'Spesifikasi Utama') return -1;
+    if (b === 'Spesifikasi Utama') return 1;
+    if (a === 'Lainnya') return 1;
+    if (b === 'Lainnya') return -1;
+    return a.localeCompare(b);
+  });
+
   return (
     <div 
       ref={ref}
@@ -103,13 +121,22 @@ const PesananExportTemplate = forwardRef(({ pesanan }, ref) => {
         </thead>
         <tbody>
           {pesanan.items && pesanan.items.length > 0 ? (
-            pesanan.items.map((item, idx) => (
-              <tr key={idx}>
-                <td style={{...tableCellStyle, textAlign: 'center'}}>{idx + 1}</td>
-                <td style={tableCellStyle}>{item.nama}</td>
-                <td style={{...tableCellStyle, textAlign: 'center'}}>{item.qty}</td>
-                <td style={tableCellStyle}></td>
-              </tr>
+            sortedCategories.map(kategori => (
+              <React.Fragment key={kategori}>
+                <tr>
+                  <td colSpan="4" style={{...tableCellStyle, backgroundColor: '#eee', fontWeight: 'bold'}}>
+                    {kategori}
+                  </td>
+                </tr>
+                {groupedItems[kategori].map((item, idx) => (
+                  <tr key={`${kategori}-${idx}`}>
+                    <td style={{...tableCellStyle, textAlign: 'center'}}>{idx + 1}</td>
+                    <td style={tableCellStyle}>{item.nama}</td>
+                    <td style={{...tableCellStyle, textAlign: 'center'}}>{item.qty}</td>
+                    <td style={tableCellStyle}></td>
+                  </tr>
+                ))}
+              </React.Fragment>
             ))
           ) : (
             <tr>

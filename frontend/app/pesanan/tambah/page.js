@@ -81,6 +81,7 @@ export default function TambahPesananPage() {
         nama: item.nama,
         qty: 1,
         gambar: item.gambar_url || '',
+        kategori: getItemCategory(item),
       }]);
     }
   }
