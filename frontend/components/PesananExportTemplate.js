@@ -4,7 +4,7 @@ const PesananExportTemplate = forwardRef(({ pesanan, katalogItems }, ref) => {
   if (!pesanan) return null;
 
   const heroImage = pesanan.items?.find(item => item.gambar)?.gambar || null;
-  
+
   const datePasangStr = pesanan.tanggal_pasang ? new Date(pesanan.tanggal_pasang).toLocaleDateString('id-ID', {
     day: 'numeric',
     month: 'long',
@@ -30,7 +30,7 @@ const PesananExportTemplate = forwardRef(({ pesanan, katalogItems }, ref) => {
   // Enrich items
   const enrichedItems = (pesanan.items || []).map(item => {
     const namaLower = (item.nama || '').trim().toLowerCase();
-    
+
     const isSpesifikasi = item.id === 'model-dekorasi' || item.id === 'tema-warna'
       || namaLower.startsWith('model dekorasi:')
       || namaLower.startsWith('tema warna/bunga:');
@@ -189,7 +189,7 @@ const PesananExportTemplate = forwardRef(({ pesanan, katalogItems }, ref) => {
               opacity: 0.035,
               userSelect: 'none'
             }}>
-              {[...Array(5)].map((_, i) => (
+              {[...Array(8)].map((_, i) => (
                 <div
                   key={i}
                   style={{
@@ -226,7 +226,7 @@ const PesananExportTemplate = forwardRef(({ pesanan, katalogItems }, ref) => {
                 />
                 <div style={{ textAlign: 'right', fontSize: '12px', color: '#000000', lineHeight: '1.45' }}>
                   <div style={{ fontWeight: '800', letterSpacing: '0.5px', marginBottom: '2px' }}>
-                    {isFirstPage ? 'DAFTAR BARANG DEKORASI' : `DAFTAR BARANG — HALAMAN ${pageIdx + 1}`}
+                    {isFirstPage ? 'DAFTAR BARANG DEKORASI' : `DAFTAR BARANG (HALAMAN ${pageIdx + 1})`}
                   </div>
                   <div style={{ fontSize: '11px', color: '#222222' }}>
                     Dsn. Kepuhrejo, Kaliboto, Kec. Tarokan<br />
@@ -259,7 +259,7 @@ const PesananExportTemplate = forwardRef(({ pesanan, katalogItems }, ref) => {
                       }}>
                         {pesanan.nama_pengantin || '-'}
                       </h1>
-                      
+
                       <div style={{ display: 'grid', gridTemplateColumns: '70px 1fr', gap: '8px 12px', color: '#444444' }}>
                         <div style={{ color: '#666666' }}>Lokasi:</div>
                         <div style={{ fontWeight: '500', color: '#111111', lineHeight: '1.45', whiteSpace: 'pre-wrap' }}>
@@ -379,30 +379,30 @@ const PesananExportTemplate = forwardRef(({ pesanan, katalogItems }, ref) => {
               }}>
                 {isLastPage ? (
                   <>
-                    {/* QR Code Block (Halaman Akhir) */}
+                    {/* QR Code Block (Halaman Akhir - Public Link) */}
                     <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
                       <img
-                        src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}&margin=0`}
-                        alt="QR Code Verifikasi"
+                        src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(typeof window !== 'undefined' ? `${window.location.origin}/cek/${pesanan.id}` : '')}&margin=0`}
+                        alt="QR Code Cek Digital"
                         style={{ width: '56px', height: '56px' }}
                         crossOrigin="anonymous"
                       />
                       <div>
-                        <div style={{ fontSize: '11px', fontWeight: '700', color: '#000000', marginBottom: '2px' }}>Pindai untuk Akses Digital</div>
-                        <div style={{ fontSize: '10px', color: '#666666' }}>Gunakan kamera HP untuk memverifikasi dokumen ini.</div>
+                        <div style={{ fontSize: '11px', fontWeight: '700', color: '#000000', marginBottom: '2px' }}>Scan QR Cek Digital</div>
+                        <div style={{ fontSize: '10px', color: '#666666' }}>Scan pakai HP untuk buka daftar barang digital.</div>
                       </div>
                     </div>
 
                     <div style={{ textAlign: 'right', fontSize: '11px', color: '#666666', lineHeight: '1.4' }}>
                       <div>Dicetak pada: {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
-                      <div style={{ marginTop: '2px' }}>Dokumen Kerja Luwes Decoration &bull; Halaman {pageIdx + 1} dari {totalPages}</div>
+                      <div style={{ marginTop: '2px' }}>Daftar Barang Luwes Decoration &bull; Halaman {pageIdx + 1} dari {totalPages}</div>
                     </div>
                   </>
                 ) : (
                   <>
                     {/* Pembatas Halaman Berlanjut (Non-Halaman Akhir) */}
                     <div style={{ fontSize: '11px', fontWeight: '600', color: '#000000', letterSpacing: '0.5px' }}>
-                      LUWES DECORATION &bull; DOKUMEN BERLANJUT KE HALAMAN BERIKUTNYA
+                      LUWES DECORATION &bull; BUKA HALAMAN SEBELAH
                     </div>
 
                     <div style={{ textAlign: 'right', fontSize: '11px', color: '#666666', lineHeight: '1.4' }}>
