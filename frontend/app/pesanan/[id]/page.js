@@ -26,15 +26,10 @@ export default function PesananDetailPage() {
 
   async function handleExport(type) {
     if (!exportRef.current) return;
-    
-    if (type === 'pdf') {
-      // Use native browser print which perfectly handles A4 and prevents text cutting
-      window.print();
-      return;
-    }
-
     setExporting(true);
     try {
+
+
       const canvas = await html2canvas(exportRef.current, { 
         scale: 2, 
         useCORS: true,
@@ -49,6 +44,14 @@ export default function PesananDetailPage() {
         link.download = `${filename}.jpg`;
         link.href = imgData;
         link.click();
+      } else if (type === 'pdf') {
+        const pdf = new jsPDF({
+          orientation: 'portrait',
+          unit: 'px',
+          format: [canvas.width / 2, canvas.height / 2]
+        });
+        pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width / 2, canvas.height / 2);
+        pdf.save(`${filename}.pdf`);
       }
     } catch (err) {
       console.error(err);

@@ -66,162 +66,175 @@ const PesananExportTemplate = forwardRef(({ pesanan, katalogItems }, ref) => {
   });
 
   return (
-    <div
+    <div 
       ref={ref}
-      className="print-template"
       style={{
-        width: '794px',
-        minHeight: '1123px',
+        width: '800px',
         backgroundColor: '#ffffff',
-        fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+        padding: '50px 60px',
+        fontFamily: 'var(--font-outfit), sans-serif',
         color: '#000000',
-        boxSizing: 'border-box',
-        padding: '48px',
+        position: 'absolute',
+        top: '-10000px',
+        left: '-10000px',
+        zIndex: -1000,
       }}
     >
-      {/* HEADER */}
+      {/* Premium Minimalist Letterhead */}
+      <div style={{
+        textAlign: 'center',
+        borderBottom: '2px solid #000',
+        paddingBottom: '24px',
+        marginBottom: '40px'
+      }}>
+        <h1 style={{ 
+          fontFamily: 'Georgia, serif', 
+          fontSize: '48px', 
+          fontWeight: 'normal', 
+          margin: '0', 
+          letterSpacing: '6px',
+          color: '#000'
+        }}>
+          LUWES
+        </h1>
+        <div style={{ 
+          fontSize: '14px', 
+          letterSpacing: '8px', 
+          textTransform: 'uppercase', 
+          marginBottom: '16px',
+          color: '#000',
+          fontWeight: '500'
+        }}>
+          Decoration
+        </div>
+        <div style={{ fontSize: '13px', color: '#444', letterSpacing: '0.5px' }}>
+          Kepuhrejo, Kaliboto, Kec. Tarokan, Kabupaten Kediri, Jawa Timur 64152
+        </div>
+      </div>
+
+      {/* Info Layout */}
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
-        alignItems: 'flex-start',
-        borderBottom: '2px solid #000000',
-        paddingBottom: '24px',
-        marginBottom: '32px',
-      }}>
-        <img
-          src="/logo_luwes.png"
-          alt="Luwes Decoration"
-          style={{ height: '56px', width: 'auto', objectFit: 'contain' }}
-          crossOrigin="anonymous"
-        />
-        <div style={{ textAlign: 'right', fontSize: '12px', lineHeight: '1.5' }}>
-          <div style={{ fontWeight: '600', marginBottom: '4px' }}>DOKUMEN KERJA</div>
-          <div>Dsn. Kepuhrejo, Kaliboto, Kec. Tarokan<br />Kabupaten Kediri, Jawa Timur 64152</div>
-        </div>
-      </div>
-
-      {/* TITLE & META GRID */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '32px',
         marginBottom: '40px',
+        fontSize: '15px'
       }}>
-        {/* Left Col */}
         <div>
-          <h1 style={{ fontSize: '24px', fontWeight: '700', margin: '0 0 16px 0', lineHeight: '1.2' }}>
-            {pesanan.nama_pengantin || '—'}
-          </h1>
-          <div style={{ fontSize: '13px', lineHeight: '1.6', display: 'grid', gridTemplateColumns: '80px 1fr', gap: '4px 8px' }}>
-            <span style={{ color: '#555555' }}>Lokasi:</span>
-            <span style={{ fontWeight: '500' }}>{pesanan.alamat || '—'}</span>
-            
-            <span style={{ color: '#555555' }}>No. HP:</span>
-            <span style={{ fontWeight: '500' }}>{pesanan.no_hp || '—'}</span>
-            
-            <span style={{ color: '#555555' }}>Catatan:</span>
-            <span style={{ fontWeight: '500' }}>{pesanan.catatan || '—'}</span>
+          <div style={{ marginBottom: '8px' }}>
+            <span style={{ color: '#666', display: 'inline-block', width: '120px' }}>Klien</span>
+            <strong style={{ fontSize: '18px' }}>{pesanan.nama_pengantin}</strong>
+          </div>
+          <div style={{ marginBottom: '8px' }}>
+            <span style={{ color: '#666', display: 'inline-block', width: '120px' }}>Tanggal</span>
+            <strong>{dateStr}</strong>
           </div>
         </div>
-        {/* Right Col */}
-        <div style={{ textAlign: 'right', fontSize: '13px', lineHeight: '1.6' }}>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px', marginBottom: '8px' }}>
-            <span style={{ color: '#555555' }}>Tanggal Pasang:</span>
-            <span style={{ fontWeight: '600' }}>{dateStr}</span>
+        <div>
+          <div style={{ marginBottom: '8px' }}>
+            <span style={{ color: '#666', display: 'inline-block', width: '100px' }}>Tema</span>
+            <strong>{tema}</strong>
+          </div>
+          <div style={{ marginBottom: '8px' }}>
+            <span style={{ color: '#666', display: 'inline-block', width: '100px' }}>Lokasi</span>
+            <strong>{alamat}</strong>
           </div>
         </div>
       </div>
 
-      {/* HERO IMAGE */}
-      {heroImage && (
-        <div style={{ marginBottom: '40px' }}>
-          <img
-            src={heroImage}
-            alt="Referensi Dekorasi"
-            style={{ width: '100%', maxHeight: '280px', objectFit: 'contain', border: '1px solid #E5E5E5' }}
-            crossOrigin="anonymous"
+      {/* Hero Image */}
+      <div style={{
+        width: '100%',
+        height: '300px',
+        backgroundColor: '#f8f8f8',
+        marginBottom: '50px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        border: '1px solid #eaeaea'
+      }}>
+        {heroImage ? (
+          <img 
+            src={heroImage} 
+            alt="Referensi" 
+            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+            crossOrigin="anonymous" 
           />
-        </div>
-      )}
-
-      {/* CATEGORIES / TABLES */}
-      <div style={{ marginBottom: '48px', paddingBottom: '48px' }}>
-        {pesanan.items && pesanan.items.length > 0 ? (
-          sortedCategories.map((kategori, catIdx) => (
-            <div key={kategori} style={{ marginBottom: '32px' }}>
-              <div style={{ 
-                fontSize: '14px', 
-                fontWeight: '700', 
-                textTransform: 'uppercase', 
-                letterSpacing: '0.5px',
-                borderBottom: '1px solid #000000',
-                paddingBottom: '8px',
-                marginBottom: '12px'
-              }}>
-                {kategori}
-              </div>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
-                <thead>
-                  <tr>
-                    <th style={{ padding: '8px 8px 8px 0', width: '40px', textAlign: 'left', fontWeight: '600', borderBottom: '1px solid #E5E5E5', color: '#555555' }}>No</th>
-                    <th style={{ padding: '8px', textAlign: 'left', fontWeight: '600', borderBottom: '1px solid #E5E5E5', color: '#555555' }}>Deskripsi Barang</th>
-                    <th style={{ padding: '8px', width: '60px', textAlign: 'center', fontWeight: '600', borderBottom: '1px solid #E5E5E5', color: '#555555' }}>Qty</th>
-                    <th style={{ padding: '8px 0 8px 8px', width: '60px', textAlign: 'center', fontWeight: '600', borderBottom: '1px solid #E5E5E5', color: '#555555' }}>Check</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {groupedItems[kategori].map((item, idx) => (
-                    <tr key={idx}>
-                      <td style={{ padding: '10px 8px 10px 0', borderBottom: '1px solid #E5E5E5', color: '#555555' }}>
-                        {String(idx + 1).padStart(2, '0')}
-                      </td>
-                      <td style={{ padding: '10px 8px', borderBottom: '1px solid #E5E5E5', fontWeight: '500', lineHeight: '1.4' }}>
-                        {item.nama}
-                      </td>
-                      <td style={{ padding: '10px 8px', borderBottom: '1px solid #E5E5E5', textAlign: 'center', fontWeight: '600' }}>
-                        {item.qty}
-                      </td>
-                      <td style={{ padding: '10px 0 10px 8px', borderBottom: '1px solid #E5E5E5', textAlign: 'center' }}>
-                        <div style={{
-                          width: '16px',
-                          height: '16px',
-                          border: '1px solid #000000',
-                          margin: '0 auto',
-                        }} />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ))
         ) : (
-          <div style={{ textAlign: 'center', color: '#888888', padding: '40px 0', fontSize: '13px' }}>
-            Tidak ada item.
-          </div>
+          <span style={{ color: '#bbb', letterSpacing: '1px' }}>TIDAK ADA GAMBAR REFERENSI</span>
         )}
       </div>
 
-      {/* FOOTER */}
-      <div style={{
-        position: 'absolute',
-        bottom: '48px',
-        left: '48px',
-        right: '48px',
-        borderTop: '1px solid #E5E5E5',
-        paddingTop: '16px',
+      <div style={{ 
+        fontSize: '14px', 
+        fontWeight: 'bold',
+        textTransform: 'uppercase',
+        letterSpacing: '1px',
+        marginBottom: '30px',
+        paddingBottom: '10px',
+        borderBottom: '1px solid #000',
         display: 'flex',
-        justifyContent: 'space-between',
-        fontSize: '11px',
-        color: '#888888',
+        justifyContent: 'space-between'
       }}>
-        <span>Luwes Decoration — Internal Checklist</span>
-        <span>Dicetak: {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+        <span>Daftar Item & Kebutuhan Tim</span>
+        <span>( Check bila dimuat )</span>
       </div>
+
+      {/* Items per Kategori (Tim) */}
+      {pesanan.items && pesanan.items.length > 0 ? (
+        sortedCategories.map(kategori => (
+          <div key={kategori} style={{ marginBottom: '50px', pageBreakInside: 'avoid' }}>
+            <h3 style={{
+              fontSize: '24px',
+              fontWeight: '800',
+              marginBottom: '16px',
+              color: '#000',
+              textTransform: 'uppercase',
+              letterSpacing: '1px'
+            }}>
+              {kategori}
+            </h3>
+            <table style={{
+              width: '100%',
+              borderCollapse: 'collapse',
+              fontSize: '15px'
+            }}>
+              <thead>
+                <tr style={{ borderBottom: '2px solid #000' }}>
+                  <th style={{ padding: '12px 0', width: '8%', textAlign: 'left', fontWeight: 'bold' }}>No</th>
+                  <th style={{ padding: '12px 0', width: '65%', textAlign: 'left', fontWeight: 'bold' }}>Deskripsi Barang</th>
+                  <th style={{ padding: '12px 0', width: '12%', textAlign: 'center', fontWeight: 'bold' }}>Qty</th>
+                  <th style={{ padding: '12px 0', width: '15%', textAlign: 'center', fontWeight: 'bold' }}>Check</th>
+                </tr>
+              </thead>
+              <tbody>
+                {groupedItems[kategori].map((item, idx) => (
+                  <tr key={`${kategori}-${idx}`} style={{ borderBottom: '1px solid #eaeaea' }}>
+                    <td style={{ padding: '12px 0', color: '#555' }}>{(idx + 1).toString().padStart(2, '0')}</td>
+                    <td style={{ padding: '12px 0', fontWeight: '500' }}>{item.nama}</td>
+                    <td style={{ padding: '12px 0', textAlign: 'center', fontWeight: '600' }}>{item.qty}</td>
+                    <td style={{ padding: '12px 0', textAlign: 'center' }}>
+                      <div style={{ 
+                        width: '20px', 
+                        height: '20px', 
+                        border: '1.5px solid #ccc',
+                        margin: '0 auto',
+                        borderRadius: '3px'
+                      }}></div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ))
+      ) : (
+        <div style={{ textAlign: 'center', color: '#999', padding: '40px 0' }}>
+          Kosong.
+        </div>
+      )}
     </div>
   );
 });
 
 PesananExportTemplate.displayName = 'PesananExportTemplate';
 export default PesananExportTemplate;
-
