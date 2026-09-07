@@ -28,33 +28,82 @@ export default function PesananDetailPage() {
     if (!exportRef.current) return;
     setExporting(true);
     try {
+      const pageElements = exportRef.current.querySelectorAll('.pdf-page');
+      if (!pageElements || pageElements.length === 0) {
+        alert('Gagal menemukan elemen cetak export.');
+        return;
+      }
 
+      const rawName = pesanan?.nama_pengantin || 'Pesanan';
+      const filename = `Manifest_${rawName.replace(/\s+/g, '_')}`;
 
-      const canvas = await html2canvas(exportRef.current, { 
-        scale: 2, 
-        useCORS: true,
-        logging: false 
-      });
-      
-      const imgData = canvas.toDataURL('image/jpeg', 1.0);
-      const filename = `Checklist_${pesanan.nama_pengantin.replace(/\s+/g, '_')}`;
-      
-      if (type === 'jpg') {
-        const link = document.createElement('a');
-        link.download = `${filename}.jpg`;
-        link.href = imgData;
-        link.click();
-      } else if (type === 'pdf') {
-        const pdf = new jsPDF({
-          orientation: 'portrait',
-          unit: 'px',
-          format: [canvas.width / 2, canvas.height / 2]
-        });
-        pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width / 2, canvas.height / 2);
+      if (type === 'pdf') {
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        
+        for (let i = 0; i < pageElements.length; i++) {
+          const canvas = await html2canvas(pageElements[i], {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            backgroundColor: '#ffffff'
+          });
+          const imgData = canvas.toDataURL('image/jpeg', 1.0);
+          if (i > 0) pdf.addPage();
+          pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+        }
+
         pdf.save(`${filename}.pdf`);
+      } else if (type === 'jpg') {
+        if (pageElements.length === 1) {
+          const canvas = await html2canvas(pageElements[0], {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            backgroundColor: '#ffffff'
+          });
+          const imgData = canvas.toDataURL('image/jpeg', 1.0);
+          const link = document.createElement('a');
+          link.download = `${filename}.jpg`;
+          link.href = imgData;
+          link.click();
+        } else {
+          // Multi-page JPG: stitch pages into one seamless high-res image
+          const canvases = [];
+          let totalHeight = 0;
+          let maxWidth = 0;
+
+          for (let i = 0; i < pageElements.length; i++) {
+            const c = await html2canvas(pageElements[i], {
+              scale: 2,
+              useCORS: true,
+              logging: false,
+              backgroundColor: '#ffffff'
+            });
+            canvases.push(c);
+            totalHeight += c.height;
+            maxWidth = Math.max(maxWidth, c.width);
+          }
+
+          const combinedCanvas = document.createElement('canvas');
+          combinedCanvas.width = maxWidth;
+          combinedCanvas.height = totalHeight;
+          const ctx = combinedCanvas.getContext('2d');
+          
+          let yOffset = 0;
+          for (const c of canvases) {
+            ctx.drawImage(c, 0, yOffset);
+            yOffset += c.height;
+          }
+
+          const imgData = combinedCanvas.toDataURL('image/jpeg', 0.95);
+          const link = document.createElement('a');
+          link.download = `${filename}.jpg`;
+          link.href = imgData;
+          link.click();
+        }
       }
     } catch (err) {
-      console.error(err);
+      console.error('Export Error:', err);
       alert('Gagal mengekspor dokumen: ' + err.message);
     } finally {
       setExporting(false);
