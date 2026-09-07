@@ -16,17 +16,36 @@ const PesananExportTemplate = forwardRef(({ pesanan, katalogItems }, ref) => {
 
   // Build katalog lookup map from prop
   const katalogMap = {};
-  (katalogItems || []).forEach(k => { katalogMap[k.id] = k; });
+  const katalogByName = {};
+  (katalogItems || []).forEach(k => {
+    katalogMap[k.id] = k;
+    if (k.nama) katalogByName[k.nama.trim().toLowerCase()] = k;
+  });
 
-  // Enrich items dengan kategori dari katalog, langsung di template
+  // Enrich items: detect by ID, name prefix, atau lookup by nama di katalog
   const enrichedItems = (pesanan.items || []).map(item => {
-    if (item.id === 'model-dekorasi' || item.id === 'tema-warna') {
+    const namaLower = (item.nama || '').trim().toLowerCase();
+    
+    // Deteksi model dekorasi dan tema warna via ID atau awalan nama
+    const isSpesifikasi = item.id === 'model-dekorasi' || item.id === 'tema-warna'
+      || namaLower.startsWith('model dekorasi:')
+      || namaLower.startsWith('tema warna/bunga:');
+
+    if (isSpesifikasi) {
       return { ...item, _resolvedKategori: 'Spesifikasi Utama' };
     }
-    const fromKatalog = katalogMap[item.id];
-    const resolvedKat = (item.kategori && item.kategori.trim() !== '')
-      ? item.kategori
-      : (fromKatalog?.kategori || '');
+
+    // Cari kategori: dari item.kategori, lalu katalog by ID, lalu katalog by nama
+    let resolvedKat = (item.kategori && item.kategori.trim() !== '') ? item.kategori : '';
+    if (!resolvedKat) {
+      const byId = katalogMap[item.id];
+      if (byId?.kategori) resolvedKat = byId.kategori;
+    }
+    if (!resolvedKat) {
+      const byName = katalogByName[namaLower];
+      if (byName?.kategori) resolvedKat = byName.kategori;
+    }
+
     return { ...item, _resolvedKategori: resolvedKat || 'Belum Ada Tim' };
   });
 

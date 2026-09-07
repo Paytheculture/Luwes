@@ -28,6 +28,8 @@ export default function PesananDetailPage() {
     if (!exportRef.current) return;
     setExporting(true);
     try {
+
+
       const canvas = await html2canvas(exportRef.current, { 
         scale: 2, 
         useCORS: true,
