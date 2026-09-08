@@ -33,9 +33,9 @@ export default function PublicCekPage() {
   }
 
   const toggleCheck = (idx) => {
-    setCheckedItems(prev => ({
+    setCheckedItems((prev) => ({
       ...prev,
-      [idx]: !prev[idx]
+      [idx]: !prev[idx],
     }));
   };
 
@@ -46,17 +46,11 @@ export default function PublicCekPage() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#f8fafc',
+        backgroundColor: '#FFFFFF',
         fontFamily: "var(--font-outfit), 'Inter', sans-serif"
       }}>
-        <div style={{ textAlign: 'center', color: '#64748b' }}>
-          <div style={{
-            width: '36px', height: '36px', border: '3px solid #cbd5e1',
-            borderTopColor: '#0f172a', borderRadius: '50%',
-            animation: 'spin 0.8s linear infinite', margin: '0 auto 12px'
-          }} />
-          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-          <div>Memuat daftar barang...</div>
+        <div style={{ textAlign: 'center', color: '#000000', fontSize: '14px', letterSpacing: '2px', textTransform: 'uppercase' }}>
+          Memuat Data...
         </div>
       </div>
     );
@@ -69,25 +63,22 @@ export default function PublicCekPage() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#f8fafc',
+        backgroundColor: '#FFFFFF',
         padding: '24px',
         fontFamily: "var(--font-outfit), 'Inter', sans-serif"
       }}>
         <div style={{
-          backgroundColor: '#ffffff',
-          borderRadius: '16px',
-          padding: '32px 24px',
+          border: '1px solid #000000',
+          padding: '40px 24px',
           maxWidth: '400px',
           width: '100%',
           textAlign: 'center',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.06)'
         }}>
-          <div style={{ fontSize: '40px', marginBottom: '12px' }}>📋</div>
-          <h2 style={{ fontSize: '18px', fontWeight: '700', color: '#0f172a', margin: '0 0 8px' }}>
-            Data Tidak Ditemukan
+          <h2 style={{ fontSize: '14px', fontWeight: '400', letterSpacing: '1px', color: '#000000', margin: '0 0 16px', textTransform: 'uppercase' }}>
+            Akses Ditolak
           </h2>
-          <p style={{ fontSize: '14px', color: '#64748b', margin: 0 }}>
-            {error || 'Daftar barang dekorasi tidak ada atau sudah dihapus.'}
+          <p style={{ fontSize: '13px', color: '#333333', margin: 0, lineHeight: '1.6' }}>
+            {error || 'Dokumen tidak valid atau telah dihapus.'}
           </p>
         </div>
       </div>
@@ -95,180 +86,207 @@ export default function PublicCekPage() {
   }
 
   const datePasangStr = pesanan.tanggal_pasang ? new Date(pesanan.tanggal_pasang).toLocaleDateString('id-ID', {
-    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-  }) : 'Belum diatur';
+    day: '2-digit', month: 'long', year: 'numeric'
+  }) : 'TBA';
+
+  const dateBongkarStr = pesanan.tanggal_bongkar ? new Date(pesanan.tanggal_bongkar).toLocaleDateString('id-ID', {
+    day: '2-digit', month: 'long', year: 'numeric'
+  }) : 'TBA';
+
+  const totalItems = pesanan.items?.length || 0;
+  const checkedCount = Object.values(checkedItems).filter(Boolean).length;
 
   return (
     <div style={{
       minHeight: '100vh',
-      backgroundColor: '#f1f5f9',
-      color: '#0f172a',
+      backgroundColor: '#FFFFFF',
+      color: '#000000',
       fontFamily: "var(--font-outfit), 'Inter', system-ui, sans-serif",
-      padding: '16px 12px 40px'
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center'
     }}>
       <div style={{
-        maxWidth: '560px',
-        margin: '0 auto',
-        backgroundColor: '#ffffff',
-        borderRadius: '20px',
-        overflow: 'hidden',
-        boxShadow: '0 10px 30px rgba(0,0,0,0.08)'
+        width: '100%',
+        maxWidth: '640px',
+        backgroundColor: '#FFFFFF',
+        minHeight: '100vh',
+        borderLeft: '1px solid #EAEAEA',
+        borderRight: '1px solid #EAEAEA',
+        boxSizing: 'border-box'
       }}>
-        {/* Header */}
+        
+        {/* Header / Kop */}
         <div style={{
-          backgroundColor: '#09090b',
-          color: '#ffffff',
-          padding: '28px 20px',
-          textAlign: 'center',
-          position: 'relative'
+          padding: '40px 24px 32px',
+          borderBottom: '1.5px solid #000000',
+          textAlign: 'center'
         }}>
-          <img
-            src="/logo-luwes.png"
-            alt="Luwes Decoration"
-            style={{ height: '42px', width: 'auto', margin: '0 auto 14px', display: 'block', filter: 'brightness(0) invert(1)' }}
-          />
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '6px',
-            backgroundColor: 'rgba(255,255,255,0.12)',
-            color: '#4ade80',
-            fontSize: '12px',
-            fontWeight: '600',
-            padding: '5px 14px',
-            borderRadius: '100px',
-            marginBottom: '14px'
+          <div style={{ 
+            fontSize: '10px', 
+            fontWeight: '600', 
+            letterSpacing: '3px', 
+            textTransform: 'uppercase', 
+            color: '#000000',
+            marginBottom: '24px'
           }}>
-            <span>✓</span> Data Resmi Luwes Decoration
+            Luwes Decoration Kediri
           </div>
+          
+          <div style={{ 
+            fontSize: '11px', 
+            color: '#666666', 
+            letterSpacing: '1px', 
+            textTransform: 'uppercase',
+            marginBottom: '8px'
+          }}>
+            Manifest Pemasangan
+          </div>
+          
           <h1 style={{
-            fontSize: '24px',
-            fontWeight: '700',
-            margin: '0 0 8px',
-            letterSpacing: '-0.3px',
+            fontSize: '32px',
+            fontWeight: '400',
+            margin: '0',
+            lineHeight: '1.2',
+            color: '#000000',
             fontFamily: "var(--font-playfair), 'Playfair Display', Georgia, serif"
           }}>
             {pesanan.nama_pengantin}
           </h1>
-          <div style={{ fontSize: '13px', color: '#a1a1aa' }}>
-            Tanggal Pasang: <strong style={{ color: '#ffffff' }}>{datePasangStr}</strong>
+        </div>
+
+        {/* Meta Grid */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          borderBottom: '1.5px solid #000000',
+        }}>
+          <div style={{
+            padding: '20px 24px',
+            borderRight: '1px solid #EAEAEA'
+          }}>
+            <div style={{ fontSize: '10px', fontWeight: '500', color: '#666666', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '6px' }}>
+              Tanggal Pasang
+            </div>
+            <div style={{ fontSize: '14px', fontWeight: '400', color: '#000000' }}>
+              {datePasangStr}
+            </div>
+          </div>
+          <div style={{
+            padding: '20px 24px',
+          }}>
+            <div style={{ fontSize: '10px', fontWeight: '500', color: '#666666', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '6px' }}>
+              Tanggal Bongkar
+            </div>
+            <div style={{ fontSize: '14px', fontWeight: '400', color: '#000000' }}>
+              {dateBongkarStr}
+            </div>
           </div>
         </div>
 
-        {/* Detail Ringkas */}
-        <div style={{ padding: '20px', backgroundColor: '#fafafa', borderBottom: '1px solid #e4e4e7' }}>
-          <div style={{ fontSize: '13px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <div>
-              <span style={{ color: '#71717a', fontSize: '12px' }}>LOKASI ACARA</span>
-              <div style={{ fontWeight: '600', color: '#18181b', marginTop: '2px', whiteSpace: 'pre-wrap', fontSize: '14px' }}>
-                {pesanan.alamat || '-'}
+        <div style={{
+          padding: '24px',
+          borderBottom: '1.5px solid #000000',
+        }}>
+          <div style={{ fontSize: '10px', fontWeight: '500', color: '#666666', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '8px' }}>
+            Lokasi Acara
+          </div>
+          <div style={{ fontSize: '15px', fontWeight: '400', color: '#000000', lineHeight: '1.5', whiteSpace: 'pre-wrap' }}>
+            {pesanan.alamat || '-'}
+          </div>
+          
+          {pesanan.catatan && (
+            <div style={{ marginTop: '20px' }}>
+              <div style={{ fontSize: '10px', fontWeight: '500', color: '#666666', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '8px' }}>
+                Catatan Operasional
+              </div>
+              <div style={{ fontSize: '14px', fontWeight: '400', color: '#333333', lineHeight: '1.5', whiteSpace: 'pre-wrap' }}>
+                {pesanan.catatan}
               </div>
             </div>
-            {pesanan.catatan && (
-              <div>
-                <span style={{ color: '#71717a', fontSize: '12px' }}>CATATAN TIM</span>
-                <div style={{ fontWeight: '500', color: '#27272a', marginTop: '2px', whiteSpace: 'pre-wrap' }}>
-                  {pesanan.catatan}
-                </div>
-              </div>
-            )}
-          </div>
+          )}
         </div>
 
-        {/* List Ceklis Barang */}
-        <div style={{ padding: '20px' }}>
+        {/* Checklist Section */}
+        <div>
           <div style={{
-            fontSize: '14px',
-            fontWeight: '700',
-            color: '#09090b',
-            marginBottom: '14px',
+            padding: '24px',
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center'
+            alignItems: 'baseline'
           }}>
-            <span>CEKLIS BARANG DEKORASI</span>
-            <span style={{ fontSize: '12px', fontWeight: '600', color: '#16a34a' }}>
-              {Object.values(checkedItems).filter(Boolean).length} / {pesanan.items?.length || 0} Tercentang
-            </span>
+            <div style={{ fontSize: '12px', fontWeight: '600', letterSpacing: '2px', textTransform: 'uppercase', color: '#000000' }}>
+              Daftar Barang
+            </div>
+            <div style={{ fontSize: '12px', color: '#666666', fontVariantNumeric: 'tabular-nums' }}>
+              {checkedCount} / {totalItems} Selesai
+            </div>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={{ paddingBottom: '60px' }}>
             {(pesanan.items || []).map((item, idx) => {
               const isChecked = !!checkedItems[idx];
+              
               return (
                 <div
                   key={idx}
                   onClick={() => toggleCheck(idx)}
                   style={{
                     display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '14px 16px',
-                    borderRadius: '12px',
-                    backgroundColor: isChecked ? '#f0fdf4' : '#ffffff',
-                    border: `1.5px solid ${isChecked ? '#86efac' : '#e4e4e7'}`,
+                    alignItems: 'flex-start',
+                    padding: '16px 24px',
+                    borderTop: '1px solid #EAEAEA',
                     cursor: 'pointer',
                     userSelect: 'none',
-                    transition: 'all 0.15s ease'
+                    backgroundColor: isChecked ? '#FAFAFA' : '#FFFFFF',
+                    transition: 'background-color 0.2s ease'
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flex: 1, minWidth: 0 }}>
-                    {item.gambar && (
-                      <img
-                        src={item.gambar}
-                        alt={item.nama}
-                        style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '8px', flexShrink: 0 }}
-                      />
-                    )}
-                    <div style={{ minWidth: 0 }}>
-                      <div style={{
-                        fontSize: '14px',
-                        fontWeight: '600',
-                        color: isChecked ? '#166534' : '#09090b',
-                        textDecoration: isChecked ? 'line-through' : 'none'
-                      }}>
-                        {item.nama}
-                      </div>
-                      <div style={{ fontSize: '12px', color: isChecked ? '#15803d' : '#71717a', marginTop: '2px' }}>
-                        Jumlah: <strong style={{ color: isChecked ? '#166534' : '#09090b' }}>{item.qty} Pcs</strong>
-                      </div>
-                    </div>
-                  </div>
-
+                  {/* Custom Sharp Checkbox */}
                   <div style={{
-                    width: '24px',
-                    height: '24px',
-                    borderRadius: '6px',
-                    border: `2px solid ${isChecked ? '#22c55e' : '#cbd5e1'}`,
-                    backgroundColor: isChecked ? '#22c55e' : '#ffffff',
+                    width: '18px',
+                    height: '18px',
+                    border: '1px solid #000000',
+                    backgroundColor: isChecked ? '#000000' : 'transparent',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: '#ffffff',
-                    fontSize: '14px',
-                    fontWeight: 'bold',
                     flexShrink: 0,
-                    marginLeft: '12px'
+                    marginRight: '16px',
+                    marginTop: '2px',
+                    transition: 'all 0.2s ease'
                   }}>
-                    {isChecked ? '✓' : ''}
+                    {isChecked && (
+                      <svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1 4.5L3.5 7L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="square"/>
+                      </svg>
+                    )}
+                  </div>
+
+                  <div style={{ flex: 1, minWidth: 0, paddingTop: '1px' }}>
+                    <div style={{
+                      fontSize: '15px',
+                      fontWeight: '400',
+                      color: isChecked ? '#888888' : '#000000',
+                      textDecoration: isChecked ? 'line-through' : 'none',
+                      lineHeight: '1.4',
+                      transition: 'color 0.2s ease'
+                    }}>
+                      {item.nama}
+                    </div>
+                    {item.qty > 1 && (
+                      <div style={{ fontSize: '12px', color: isChecked ? '#AAAAAA' : '#666666', marginTop: '6px', fontVariantNumeric: 'tabular-nums' }}>
+                        Qty: {item.qty}
+                      </div>
+                    )}
                   </div>
                 </div>
               );
             })}
+            <div style={{ borderTop: '1px solid #EAEAEA' }} />
           </div>
         </div>
 
-        {/* Footer info */}
-        <div style={{
-          padding: '16px 20px',
-          backgroundColor: '#fafafa',
-          borderTop: '1px solid #e4e4e7',
-          textAlign: 'center',
-          fontSize: '11px',
-          color: '#71717a'
-        }}>
-          Daftar barang digital resmi <strong>Luwes Decoration Kediri</strong>
-        </div>
       </div>
     </div>
   );
