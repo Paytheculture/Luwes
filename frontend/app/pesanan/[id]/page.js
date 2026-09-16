@@ -23,6 +23,7 @@ export default function PesananDetailPage() {
   const [form, setForm] = useState({});
   const [exporting, setExporting] = useState(false);
   const exportRef = useRef(null);
+  const [catalogItems, setCatalogItems] = useState([]);
 
   async function handleExport(type) {
     if (!exportRef.current) return;
@@ -113,6 +114,7 @@ export default function PesananDetailPage() {
   useEffect(() => {
     if (!isLoggedIn()) { router.push('/login'); return; }
     loadData();
+    loadCatalog();
   }, []);
 
   async function loadData() {
@@ -157,6 +159,47 @@ export default function PesananDetailPage() {
     } finally {
       setLoading(false);
     }
+  }
+
+  async function loadCatalog() {
+    try {
+      const resItems = await api('/api/items');
+      setCatalogItems(resItems.data || []);
+    } catch (err) {
+      console.error("Gagal load items:", err);
+    }
+  }
+
+  function toggleItem(item) {
+    const items = form.items || [];
+    const exists = items.find((s) => s.nama === item.nama);
+    if (exists) {
+      setForm({ ...form, items: items.filter((s) => s.nama !== item.nama) });
+    } else {
+      setForm({
+        ...form,
+        items: [...items, { id: item.id, nama: item.nama, qty: 1, gambar: item.gambar_url || '' }]
+      });
+    }
+  }
+
+  function updateQty(nama, delta) {
+    const items = form.items || [];
+    setForm({
+      ...form,
+      items: items.map((s) => {
+        if (s.nama === nama) {
+          const newQty = Math.max(1, s.qty + delta);
+          return { ...s, qty: newQty };
+        }
+        return s;
+      })
+    });
+  }
+
+  function removeItem(nama) {
+    const items = form.items || [];
+    setForm({ ...form, items: items.filter((s) => s.nama !== nama) });
   }
 
   async function handleSave() {
@@ -333,26 +376,95 @@ export default function PesananDetailPage() {
             Item dekorasi
           </h3>
 
-          {pesanan.items && pesanan.items.length > 0 ? (
-            <div className="selected-items">
-              {pesanan.items.map((item, idx) => (
-                <div key={idx} className="selected-item-row">
-                  <div className="selected-item-thumb">
-                    {item.gambar ? (
-                      <img src={item.gambar} alt={item.nama} />
-                    ) : (
-                      <div style={{ width: '100%', height: '100%', background: 'var(--bg-elevated)' }} />
-                    )}
-                  </div>
-                  <div className="order-item-info">
-                    <h5>{item.nama}</h5>
-                    <span>Kuantitas: {item.qty}</span>
+          {editing ? (
+            <>
+              {catalogItems.length > 0 && (
+                <div style={{ marginBottom: 'var(--sp-6)' }}>
+                  <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 600, marginBottom: 'var(--sp-3)', color: 'var(--text-secondary)' }}>Katalog Item</h4>
+                  <div className="item-grid">
+                    {catalogItems.map((item) => {
+                      const isSelected = (form.items || []).some((s) => s.nama === item.nama);
+                      return (
+                        <div
+                          key={item.id}
+                          className={`item-card ${isSelected ? 'selected' : ''}`}
+                          onClick={() => toggleItem(item)}
+                        >
+                          <div className="item-card-img">
+                            {item.gambar_url ? (
+                              <img src={item.gambar_url} alt={item.nama} />
+                            ) : (
+                              <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: 'var(--text-xs)' }}>
+                                Belum ada foto
+                              </div>
+                            )}
+                          </div>
+                          <div className="item-card-body">
+                            <h4>{item.nama}</h4>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
-              ))}
-            </div>
+              )}
+
+              <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: 600, marginBottom: 'var(--sp-3)', color: 'var(--text-secondary)' }}>Item Terpilih</h4>
+              {form.items && form.items.length > 0 ? (
+                <div className="selected-items">
+                  {form.items.map((item, idx) => (
+                    <div key={idx} className="selected-item-row" style={{ display: 'flex', alignItems: 'center', padding: 'var(--sp-3)', borderBottom: '1px solid var(--border-color)' }}>
+                      <div className="selected-item-thumb" style={{ width: '48px', height: '48px', background: 'var(--bg-elevated)', marginRight: 'var(--sp-3)' }}>
+                        {item.gambar && <img src={item.gambar} alt={item.nama} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                      </div>
+                      <div className="selected-item-info" style={{ flex: 1 }}>
+                        <h5>{item.nama}</h5>
+                        <div className="qty-control" style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}>
+                          <button type="button" onClick={() => updateQty(item.nama, -1)}>−</button>
+                          <span>{item.qty}</span>
+                          <button type="button" onClick={() => updateQty(item.nama, 1)}>+</button>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        className="btn-icon"
+                        onClick={() => removeItem(item.nama)}
+                        title="Hapus item"
+                        style={{ color: 'var(--danger-color)' }}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-sm)' }}>Tidak ada item.</p>
+              )}
+            </>
           ) : (
-            <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-sm)' }}>Tidak ada item.</p>
+            <>
+              {pesanan.items && pesanan.items.length > 0 ? (
+                <div className="selected-items">
+                  {pesanan.items.map((item, idx) => (
+                    <div key={idx} className="selected-item-row">
+                      <div className="selected-item-thumb">
+                        {item.gambar ? (
+                          <img src={item.gambar} alt={item.nama} />
+                        ) : (
+                          <div style={{ width: '100%', height: '100%', background: 'var(--bg-elevated)' }} />
+                        )}
+                      </div>
+                      <div className="order-item-info">
+                        <h5>{item.nama}</h5>
+                        <span>Kuantitas: {item.qty}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p style={{ color: 'var(--text-muted)', fontSize: 'var(--text-sm)' }}>Tidak ada item.</p>
+              )}
+            </>
           )}
 
         </div>
