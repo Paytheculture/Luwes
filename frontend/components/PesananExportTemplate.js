@@ -69,7 +69,8 @@ const PesananExportTemplate = forwardRef(({ pesanan, katalogItems }, ref) => {
   });
 
   // Smart Pagination calculation based on exact pixel heights to ensure zero footer clipping
-  const page1Capacity = heroImage ? 300 : 480;
+  // With hero image height at 393px (16:9), page 1 has about 300px less capacity than without.
+  const page1Capacity = heroImage ? 250 : 480;
   const subsequentCapacity = 660;
 
   const pagesData = [];
@@ -295,7 +296,7 @@ const PesananExportTemplate = forwardRef(({ pesanan, katalogItems }, ref) => {
                       <div
                         style={{
                           width: '100%',
-                          height: '210px',
+                          height: '393px', // 16:9 aspect ratio based on 698px effective width
                           backgroundImage: `url("${heroImage}")`,
                           backgroundSize: 'cover',
                           backgroundPosition: 'center',
