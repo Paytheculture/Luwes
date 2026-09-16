@@ -124,6 +124,7 @@ export default function EditItemPage() {
                   <option value="Tim Dekorasi Bunga">Tim Dekorasi Bunga</option>
                   <option value="Tim Properti">Tim Properti</option>
                   <option value="Alat-alat Masak">Alat-alat Masak</option>
+                  <option value="Tim Sound System">Tim Sound System</option>
                 </select>
               </div>
 
