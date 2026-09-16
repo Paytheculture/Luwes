@@ -218,12 +218,14 @@ const PesananExportTemplate = forwardRef(({ pesanan, katalogItems }, ref) => {
                 borderBottom: '1.5px solid #000000',
                 marginBottom: isFirstPage ? '24px' : '20px'
               }}>
-                <img
-                  src="/logo-luwes.png"
-                  alt="Luwes Decoration"
-                  style={{ height: '48px', width: 'auto', objectFit: 'contain' }}
-                  crossOrigin="anonymous"
-                />
+                <div style={{
+                  height: '48px',
+                  width: '180px',
+                  backgroundImage: 'url("/logo-luwes.png")',
+                  backgroundSize: 'contain',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'left center'
+                }} />
                 <div style={{ textAlign: 'right', fontSize: '12px', color: '#000000', lineHeight: '1.45' }}>
                   <div style={{ fontWeight: '800', letterSpacing: '0.5px', marginBottom: '2px' }}>
                     {isFirstPage ? 'DAFTAR BARANG DEKORASI' : `DAFTAR BARANG (HALAMAN ${pageIdx + 1})`}
@@ -290,17 +292,16 @@ const PesananExportTemplate = forwardRef(({ pesanan, katalogItems }, ref) => {
                   {/* HERO IMAGE */}
                   {heroImage && (
                     <div style={{ marginBottom: '24px', width: '100%' }}>
-                      <img
-                        src={heroImage}
-                        alt="Referensi Visual Dekorasi"
+                      <div
                         style={{
                           width: '100%',
                           height: '210px',
-                          objectFit: 'cover',
-                          borderRadius: '0px',
-                          display: 'block'
+                          backgroundImage: `url("${heroImage}")`,
+                          backgroundSize: 'cover',
+                          backgroundPosition: 'center',
+                          backgroundRepeat: 'no-repeat',
+                          borderRadius: '0px'
                         }}
-                        crossOrigin="anonymous"
                       />
                     </div>
                   )}
