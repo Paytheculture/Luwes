@@ -123,7 +123,7 @@ export default function EditItemPage() {
                   <option value="Tim Tenda">Tim Tenda</option>
                   <option value="Tim Dekorasi Bunga">Tim Dekorasi Bunga</option>
                   <option value="Tim Properti">Tim Properti</option>
-                  <option value="Tim Dapur & Prasmanan">Tim Dapur & Prasmanan</option>
+                  <option value="Alat-alat Masak">Alat-alat Masak</option>
                 </select>
               </div>
 
